@@ -5,4 +5,13 @@
 
 int main()
 {
+    /*
+    char filename[MAX_FILENAME];
+
+    Database *database = createDatabase();
+    getDatabaseFilename(filename);
+
+    printWelcomeMessage();
+    */
+    executeCommands();
 }
