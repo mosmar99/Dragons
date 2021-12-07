@@ -10,8 +10,10 @@ int main()
 
     Database *database = createDatabase();
     getDatabaseFilename(filename);
+    */
 
     printWelcomeMessage();
-    */
+    puts("");
+    printMenu();
     executeCommands();
 }

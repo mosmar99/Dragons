@@ -13,6 +13,12 @@ Database *createDatabase()
     db->nextId = 1; // id = 0 not allowed
     db->size = 0;
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
+    if (db->dragons == NULL)
+    {
+        puts("Error: failed to allocate memory for dragon array.");
+        return NULL;
+    }
+
     return db;
 }
 

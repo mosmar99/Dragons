@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 
-// Prints the menu
+// Prints the initial welcome message.
 void printWelcomeMessage();
+
+// Prints the menu.
+void printMenu();
 
 // Contains functionality of the menu
 void executeCommands();
