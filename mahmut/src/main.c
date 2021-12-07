@@ -11,10 +11,10 @@ int main(int argc, char **argv) {
     char filename[MAX_FILENAME];
     Database *database = createDatabase();
     getDatabaseFilename(filename);
-    // loadDatabase(filename, database);
-    // printWelcomeMessage();
-    // executeCommands(database);
-    // saveDatabase(filename, database);
+    loadDatabase(filename, database);
+    printWelcomeMessage();
+    executeCommands(database);
+    saveDatabase(filename, database);
     destroyDatabase(database);
 
     return 0;

@@ -7,6 +7,9 @@
 void printWelcomeMessage(void);
 
 // Contains functionality of the menu
-void executeCommands(void);
+void executeCommands(Database *database);
+
+// prints the menu
+void printMenu(void);
 
 #endif
