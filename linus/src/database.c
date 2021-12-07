@@ -28,14 +28,6 @@ void getDatabaseFilename(char *filename)
     scanf("%49s", filename);
 }
 
-void loadDatabase(char *filename, Database *db)
-{
-}
-
-void saveDatabase(char *filename, Database *db)
-{
-}
-
 void destroyDatabase(Database *db)
 {
     if (db != NULL)

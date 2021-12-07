@@ -11,7 +11,7 @@
 // If the database gets full, its size multiplies with this growth factor
 #define GROWTH_FACTOR 2
 
-// Maximum number minus 1 of characters allowed in name of database
+// Maximum number (minus 1) of characters allowed in name of database
 #define MAX_FILENAME 50
 
 typedef struct Database
@@ -27,12 +27,6 @@ Database *createDatabase();
 
 // Prompts user for the filename of the database (e.g. "dragons.txt")
 void getDatabaseFilename(char *);
-
-// Loads the content in .txt file into the database
-void loadDatabase(char *, Database *);
-
-// Stores the database in a chosen file
-void saveDatabase(char *, Database *);
 
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);

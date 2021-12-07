@@ -26,7 +26,7 @@ void printMenu()
     puts("------------------------------------------");
 }
 
-void executeCommands()
+void executeCommands(Database *db)
 {
     int choice = -2;
     while (choice != -1)

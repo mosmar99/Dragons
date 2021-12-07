@@ -5,15 +5,17 @@
 
 int main()
 {
-    /*
-    char filename[MAX_FILENAME];
+    char filename[MAX_FILENAME - 1];
 
     Database *database = createDatabase();
     getDatabaseFilename(filename);
-    */
+    loadDatabase(filename, database);
 
     printWelcomeMessage();
     puts("");
     printMenu();
-    executeCommands();
+    executeCommands(database);
+
+    //saveDatabase(filename, database);
+    destroyDatabase(database);
 }

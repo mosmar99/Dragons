@@ -4,6 +4,9 @@
 // The maximum number of colours any dragon can have
 #define MAX_COLOURS 5
 
+// The maximum (minus 1) length allowed in a dragon's name
+#define MAX_NAME 50
+
 typedef struct Dragon
 {
     unsigned int id;            // id

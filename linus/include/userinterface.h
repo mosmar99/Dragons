@@ -2,6 +2,7 @@
 #define _USERINTERFACE_H
 
 #include <stdio.h>
+#include "database.h"
 
 // Prints the initial welcome message.
 void printWelcomeMessage();
@@ -10,6 +11,6 @@ void printWelcomeMessage();
 void printMenu();
 
 // Contains functionality of the menu
-void executeCommands();
+void executeCommands(Database *);
 
 #endif
