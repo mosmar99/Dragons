@@ -33,7 +33,7 @@ void loadDatabase(char *filename, Database *db)
         {
             char name[MAX_NAME - 1];
             fscanf(filePtr, "%49s", name);
-            db->dragons[dragonIndex].name = name;
+            strcpy(db->dragons[dragonIndex].name, name);
             hasReadName = true;
         }
         else if (!hasReadVolant) // read volant
@@ -60,12 +60,12 @@ void loadDatabase(char *filename, Database *db)
         }
         else // all the colours
         {
-
             for (size_t i = 0; i < numbOfColours && i < MAX_COLOURS && !feof(filePtr); i++)
             {
                 char colour[MAX_COLOUR_NAME - 1];
                 fscanf(filePtr, "%24s", colour);
-                db->dragons[dragonIndex].colours[i] = colour;
+                //db->dragons[dragonIndex].colours[i] = colour;
+                strcpy(db->dragons[dragonIndex].colours[i], colour);
             }
 
             // at this point, one dragon has been fully read and stored in the database
