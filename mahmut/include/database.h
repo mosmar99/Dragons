@@ -5,10 +5,6 @@
 #include <stdio.h>
 #include "dragon.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "dragon.h"
-
 // The initial capacity of the database
 #define INITIAL_CAPACITY 10
 
@@ -31,12 +27,6 @@ Database *createDatabase();
 
 // Prompts user for the filename of the database (e.g. "dragons.txt")
 void getDatabaseFilename(char *);
-
-// Loads the content in .txt file into the database
-void loadDatabase(char *, Database *);
-
-// Stores the database in a chosen file
-void saveDatabase(char *, Database *);
 
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);

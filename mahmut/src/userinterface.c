@@ -1,7 +1,7 @@
 #include "userinterface.h"
 #include "database.h"
 
-void printWelcomeMessage() {
+void printWelcomeMessage(void) {
     printf("This program helps organize information about dragons. You may add and\n");
     printf("remove dragons and their attributes, list the dragons currently in the\n");
     printf("database, and their attributes, look up the attributes of an individual\n");
@@ -25,7 +25,7 @@ void printMenu(void){
     puts("------------------------------------------");
 }
 
-void executeCommands(Database *database)
+void executeCommands(Database *db)
 {
     int choice = -2;
     while (choice != -1)

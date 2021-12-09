@@ -13,13 +13,18 @@ Database *createDatabase()
     db->nextId = 1; // id = 0 not allowed
     db->size = 0;
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
+    if (db->dragons == NULL)
+    {
+        puts("Error: failed to allocate memory for dragon array.");
+        return NULL;
+    }
     return db;
 }
 
 void getDatabaseFilename(char *filename)
 {
     printf("Enter the name of the database: ");
-    scanf("%49[a-zA-Z. ]", filename);
+    scanf("%49s", filename);
 }
 
 void loadDatabase(char *filename, Database *db)
