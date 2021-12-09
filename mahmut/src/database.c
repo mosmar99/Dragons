@@ -9,15 +9,16 @@ Database *createDatabase()
         return NULL;
     }
 
-    db->capacity = INITIAL_CAPACITY;
-    db->nextId = 1; // id = 0 not allowed
-    db->size = 0;
+    db->capacity = INITIAL_CAPACITY; 
+    db->nextId = 1; // indexing of dragons begins at index 1
+    db->size = 0; // amount of dragons
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
     if (db->dragons == NULL)
     {
         puts("Error: failed to allocate memory for dragon array.");
         return NULL;
     }
+
     return db;
 }
 
@@ -25,14 +26,6 @@ void getDatabaseFilename(char *filename)
 {
     printf("Enter the name of the database: ");
     scanf("%49s", filename);
-}
-
-void loadDatabase(char *filename, Database *db)
-{
-}
-
-void saveDatabase(char *filename, Database *db)
-{
 }
 
 void destroyDatabase(Database *db)

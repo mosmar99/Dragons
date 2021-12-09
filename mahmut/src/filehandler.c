@@ -3,102 +3,51 @@
 
 void loadDatabase(char *filename, Database *db)
 {
-    FILE *filePtr = fopen(filename, "r");
-    if (filePtr == NULL)
-    {
-        printf("Error: failed to open %s.", filename);
-        exit(-1);
-    }
+    // read file dragon.txt, mahmut/files/dragons.txt
+    FILE *drgFilePtr = fopen(filename, "r");
+    if(drgFilePtr == NULL) printf("Err: File couldn't be opened, exiting the program"), exit (-1); // file couldn't be opened, so exit program
 
-    // read how many dragons there are in the list
-    size_t numbOfDragons;
-    fscanf(filePtr, "%llu", &numbOfDragons);
-    db->size = numbOfDragons;
+    // read dragoncount
+    fscanf(drgFilePtr, "%d", &(*db).size);
+    
+    int id, colourCount, fierceness, nextId; char volant; // used to check validity of input
+    for (int drgIdx = 0; drgIdx < (*db).size && !feof(drgFilePtr); drgIdx++) {
 
-    size_t dragonIndex = 0;  // count dragons
-    size_t integersRead = 0; // always read 3 integers per dragon (id, fierce, # of colours)
-    bool hasReadName = false;
-    bool hasReadVolant = false;
-    size_t numbOfColours;
-    while (dragonIndex < numbOfDragons || !feof(filePtr)) // loop through all dragons
-    {
-        if (integersRead == 0) // read id
-        {
-            size_t id;
-            fscanf(filePtr, "%llu", &id);
-            db->dragons[dragonIndex].id = id;
-            integersRead++;
-        }
-        else if (!hasReadName) // read name
-        {
-            char *arr = calloc(MAX_NAME, sizeof(char));
-            if (!arr)
-            {
-                puts("Error: failed to allocate memory for dragon name.");
-                exit (-1);
-            }
-            
-            fscanf(filePtr, "%49s", arr);
-            db->dragons[dragonIndex].name = arr;
-            arr = NULL;
-            free(arr);
-            hasReadName = true;
-        }
-        else if (!hasReadVolant) // read volant
-        {
-            char volant;
-            fscanf(filePtr, "%s", &volant);
-            assert(volant == 'Y' || volant == 'N');
-            db->dragons[dragonIndex].isVolant = volant;
-            hasReadVolant = true;
-        }
-        else if (integersRead == 1) // read fierceness
-        {
-            size_t fierceness;
-            fscanf(filePtr, "%llu", &fierceness);
-            db->dragons[dragonIndex].fierceness = fierceness;
-            integersRead++;
-        }
-        else if (integersRead == 2) // read # of colours
-        {
-            fscanf(filePtr, "%llu", &numbOfColours);
-            assert(numbOfColours <= MAX_COLOURS);
-            db->dragons[dragonIndex].numColours = numbOfColours;
-            integersRead++;
-        }
-        else // all the colours
-        {
-            for (size_t i = 0; i < numbOfColours && i < MAX_COLOURS && !feof(filePtr); i++)
-            {
-                char *colour = calloc(MAX_COLOUR_NAME, sizeof(char));
-                if (!colour)
-                {
-                    puts("Error");
-                    exit(-1);
-                }
-                
-                fscanf(filePtr, "%24s", colour);   
-                db->dragons[dragonIndex].colours[i] = colour;
-                colour = NULL;
-                free(colour);                                                                 
-            }
+        // read id
+        fscanf(drgFilePtr, "%d", &id), assert(id > 0); // read, save and check input
+        (*db).dragons[drgIdx].id = id; // init idx to positively read input
 
-            // at this point, one dragon has been fully read and stored in the database
+        // read name
+        (*db).dragons[drgIdx].name = calloc(MAX_NAME, sizeof(char));
+        if(!(*db).dragons[drgIdx].name) puts("Err: Failed to allocate memory for dragon name"), exit(-1);
+        fscanf(drgFilePtr, "%49s", (*db).dragons[drgIdx].name);
 
-            // reset neccesary variables to read another dragon
-            dragonIndex++;
-            integersRead = 0;
-            hasReadName = false;
-            hasReadVolant = false;
+        // read volant
+        fscanf(drgFilePtr, "%s", &volant), assert(volant == 'Y' || volant == 'N'); // read, check
+        (*db).dragons[drgIdx].isVolant = volant;
+
+        // read fierceness
+        fscanf(drgFilePtr, "%d", &fierceness), assert(fierceness >= 1 && fierceness <= 10);
+        (*db).dragons[drgIdx].fierceness = fierceness;
+
+        // read # of colours
+        fscanf(drgFilePtr, "%d", &colourCount), assert(colourCount > 0 && colourCount <= MAX_COLOURS);
+        (*db).dragons[drgIdx].numColours = colourCount;
+
+        // all the colours
+        for (int currCol = 0; currCol < colourCount && currCol < MAX_COLOURS && !feof(drgFilePtr); currCol++) {
+            db->dragons[drgIdx].colours[currCol] = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!db->dragons[drgIdx].colours[currCol]) puts("Err: Failed to allocate memory forc dragon color"), exit(-1);
+            fscanf(drgFilePtr, "%24s", db->dragons[drgIdx].colours[currCol]);
         }
     } // end dragon loop
 
-    // last thing to read in txt file is the next available id
-    size_t nextId;
-    fscanf(filePtr, "%llu", &nextId);
-    db->nextId = nextId;
+    // read next available ID for a potentially newly added dragon to our database
+    if(feof(drgFilePtr)) puts("Err: nextId does not exist in database"), exit(-1);
+    fscanf(drgFilePtr, "%d", &nextId);
+    (*db).nextId = nextId;
 
-    fclose(filePtr);
+    fclose(drgFilePtr);
 }
 
 void saveDatabase(char *filename, Database *db)
