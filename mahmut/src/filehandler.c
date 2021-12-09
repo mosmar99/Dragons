@@ -36,9 +36,9 @@ void loadDatabase(char *filename, Database *db)
 
         // all the colours
         for (int currCol = 0; currCol < colourCount && currCol < MAX_COLOURS && !feof(drgFilePtr); currCol++) {
-            db->dragons[drgIdx].colours[currCol] = calloc(MAX_COLOUR_NAME, sizeof(char));
-            if (!db->dragons[drgIdx].colours[currCol]) puts("Err: Failed to allocate memory forc dragon color"), exit(-1);
-            fscanf(drgFilePtr, "%24s", db->dragons[drgIdx].colours[currCol]);
+            (*db).dragons[drgIdx].colours[currCol] = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!(*db).dragons[drgIdx].colours[currCol]) puts("Err: Failed to allocate memory forc dragon color"), exit(-1);
+            fscanf(drgFilePtr, "%24s", (*db).dragons[drgIdx].colours[currCol]);
         }
     } // end dragon loop
 
