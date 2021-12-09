@@ -31,9 +31,17 @@ void loadDatabase(char *filename, Database *db)
         }
         else if (!hasReadName) // read name
         {
-            char name[MAX_NAME - 1];
-            fscanf(filePtr, "%49s", name);
-            strcpy(db->dragons[dragonIndex].name, name);
+            char *arr = calloc(MAX_NAME, sizeof(char));
+            if (!arr)
+            {
+                puts("Error: failed to allocate memory for dragon name.");
+                exit (-1);
+            }
+            
+            fscanf(filePtr, "%49s", arr);
+            db->dragons[dragonIndex].name = arr;
+            arr = NULL;
+            free(arr);
             hasReadName = true;
         }
         else if (!hasReadVolant) // read volant
@@ -62,10 +70,17 @@ void loadDatabase(char *filename, Database *db)
         {
             for (size_t i = 0; i < numbOfColours && i < MAX_COLOURS && !feof(filePtr); i++)
             {
-                char colour[MAX_COLOUR_NAME - 1];
-                fscanf(filePtr, "%24s", colour);
-                //db->dragons[dragonIndex].colours[i] = colour;
-                strcpy(db->dragons[dragonIndex].colours[i], colour);
+                char *colour = calloc(MAX_COLOUR_NAME, sizeof(char));
+                if (!colour)
+                {
+                    puts("Error");
+                    exit(-1);
+                }
+                
+                fscanf(filePtr, "%24s", colour);   
+                db->dragons[dragonIndex].colours[i] = colour;
+                colour = NULL;
+                free(colour);                                                                 
             }
 
             // at this point, one dragon has been fully read and stored in the database
