@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <assert.h>
+#include <string.h>
 #include "dragon.h"
 
 // The initial capacity of the database
@@ -30,5 +34,12 @@ void getDatabaseFilename(char *);
 
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);
+
+// Search database for a dragon by name or ID
+// Returns its index or -1 if not found
+int searchForDragon(const Database *const, const char *);
+
+// Returns whether or not the string entered by user is an integer or name 
+bool isID(const char *const);
 
 #endif

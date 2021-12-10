@@ -8,7 +8,7 @@
 #define MAX_COLOUR_NAME 25
 
 // The maximum (minus 1) length allowed in a dragon's name
-#define MAX_NAME 50
+#define MAX_NAME 25
 
 typedef struct Dragon
 {

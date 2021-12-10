@@ -13,4 +13,16 @@ void printMenu();
 // Contains functionality of the menu
 void executeCommands(Database *);
 
+// Prints a list of all dragons (brief)
+void listAllDragonsBrief(const Database *const);
+
+// Prints a list of all dragons (detailed)
+void listAllDragonsDetailed(const Database *const);
+
+// Prints one dragon
+void printOneDragon(const Database *const);
+
+// Get an ID or name of dragon from user
+void getDragonNameOrId(char *);
+
 #endif

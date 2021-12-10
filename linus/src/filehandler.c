@@ -17,7 +17,7 @@ void loadDatabase(const char *const filename, Database *const db)
     for (size_t dragonIndex = 0; dragonIndex < db->size && !feof(filePtr); dragonIndex++)
     {
         // read id
-        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].id);
+        fscanf(filePtr, "%d", &db->dragons[dragonIndex].id);
         assert(db->dragons[dragonIndex].id > 0);
 
         // read name
@@ -27,18 +27,18 @@ void loadDatabase(const char *const filename, Database *const db)
             puts("Error: failed to allocate memory for a dragon's name.");
             exit(-1);
         }
-        fscanf(filePtr, "%49s", db->dragons[dragonIndex].name);
+        fscanf(filePtr, "%24s", db->dragons[dragonIndex].name);
 
         // read volant
         fscanf(filePtr, "%s", &db->dragons[dragonIndex].isVolant);
         assert(db->dragons[dragonIndex].isVolant == 'Y' || db->dragons[dragonIndex].isVolant == 'N');
 
         // read fierceness
-        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].fierceness);
+        fscanf(filePtr, "%d", &db->dragons[dragonIndex].fierceness);
         assert(db->dragons[dragonIndex].fierceness >= 1 && db->dragons[dragonIndex].fierceness <= 10);
 
         // read # of colours
-        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].numColours);
+        fscanf(filePtr, "%d", &db->dragons[dragonIndex].numColours);
         assert(db->dragons[dragonIndex].numColours <= MAX_COLOURS);
 
         // all the colours
@@ -61,7 +61,8 @@ void loadDatabase(const char *const filename, Database *const db)
         puts("Error: nextId in database does not exist.");
         exit(-1);
     }
-    fscanf(filePtr, "%llu", &db->nextId);
+    fscanf(filePtr, "%d", &db->nextId);
+    assert(db->nextId > 0);
 
     fclose(filePtr);
 }

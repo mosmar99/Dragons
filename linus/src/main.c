@@ -11,10 +11,11 @@ int main()
     getDatabaseFilename(filename);
     loadDatabase(filename, database);
 
-    //printWelcomeMessage();
-    //puts("");
-    //printMenu();
-    //executeCommands(database);
+    puts("");
+    printWelcomeMessage();
+    puts("");
+    printMenu();
+    executeCommands(database);
 
     saveDatabase(filename, database);
     destroyDatabase(database);

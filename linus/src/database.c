@@ -53,7 +53,60 @@ void destroyDatabase(Database *db)
             }
         }
 
+        free(db->dragons);
+
         free(db);
         db = NULL;
     }
+}
+
+int searchForDragon(const Database *const db, const char *identifier)
+{
+    bool isName = !isID(identifier);
+
+    // convert the string to an integer
+    long id = -1;
+    if (!isName)
+    {
+        char *endPtr;
+        id = strtol(identifier, &endPtr, 0);
+        if (id < 1)
+        {
+            printf("Error: non-valid ID: %d\n", id);
+            return id;
+        }
+           
+    }
+
+    for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
+    {
+        if (isName)
+        {
+            if (strcmp(db->dragons[dragonIndex].name, identifier) == 0)
+            {
+                return db->dragons[dragonIndex].id;
+            }
+        }
+        else
+        {
+            if (db->dragons[dragonIndex].id == id)
+            {
+                return id;
+            }
+        }
+    }
+    return id;
+}
+
+bool isID(const char *const identifier)
+{
+    for (const char *i = identifier; *i != '\0'; i++)
+    {
+        unsigned int c = (int)*i; // convert a character to its ASCII value in decimals
+        if (!isdigit(c) && *i != '-')
+        {
+            return false;
+        }
+    }
+    return true;
 }
