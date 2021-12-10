@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include "database.h"
-#include "dragon.h"
 
 // Loads the content in .txt file into the database
 void loadDatabase(const char *const, Database *const);

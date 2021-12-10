@@ -6,14 +6,15 @@ void loadDatabase(const char *const filename, Database *const db)
     FILE *filePtr = fopen(filename, "r");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.", filename);
+        printf("Error: failed to open %s.\n", filename);
         exit(-1);
     }
 
     // read how many dragons there are in the list
     fscanf(filePtr, "%llu", &db->size);
 
-    for (size_t dragonIndex = 0; dragonIndex < db->size && !feof(filePtr); dragonIndex++) // loop through all dragons
+    // loop through all dragons
+    for (size_t dragonIndex = 0; dragonIndex < db->size && !feof(filePtr); dragonIndex++)
     {
         // read id
         fscanf(filePtr, "%llu", &db->dragons[dragonIndex].id);
@@ -70,28 +71,41 @@ void saveDatabase(const char *const filename, const Database *const db)
     FILE *filePtr = fopen("linus/files/dragons_test.txt", "w");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.", "linus/files/dragons_test.txt");
+        printf("Error: failed to open %s.\n", filename);
         exit(-1);
     }
 
     // write database size
-    fprintf(filePtr, "%llu", db->size);
+    fprintf(filePtr, "%llu\n", db->size);
 
     // loop through all dragons
-    for (size_t i = 0; i < db->size; i++)
+    for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
     {
         // write id
-        fprintf(filePtr, "%llu", db->dragons[i].id);
+        fprintf(filePtr, "%llu\n", db->dragons[dragonIndex].id);
 
-        // name
-        fprintf(filePtr, "%s", db->dragons[i].name);
+        // write name
+        fprintf(filePtr, "%s\n", db->dragons[dragonIndex].name);
 
-        // volant
-        fprintf(filePtr, "%s", db->dragons[i].isVolant);
+        // write volant
+        fprintf(filePtr, "%c\n", db->dragons[dragonIndex].isVolant);
 
-        // # of colours
-        fprintf(filePtr, "%llu", db->dragons[i].numColours);
-    }
-    
-    
+        // write fierceness
+        fprintf(filePtr, "%llu\n", db->dragons[dragonIndex].fierceness);
+
+        // write # of colours
+        fprintf(filePtr, "%llu\n", db->dragons[dragonIndex].numColours);
+
+        // write all colours
+        for (size_t colourIndex = 0; colourIndex < db->dragons[dragonIndex].numColours; colourIndex++)
+        {
+            fprintf(filePtr, "%s\n", db->dragons[dragonIndex].colours[colourIndex]);
+        }
+
+    } // end dragon loop
+
+    // write next available unique id
+    fprintf(filePtr, "%llu", db->nextId);
+
+    fclose(filePtr);
 }
