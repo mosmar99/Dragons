@@ -25,4 +25,7 @@ void printOneDragon(const Database *const);
 // Get an ID or name of dragon from user
 void getDragonNameOrId(char *);
 
+// Prints statistics of the database
+void printDatabaseInfo(const Database *const);
+
 #endif

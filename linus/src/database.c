@@ -75,7 +75,6 @@ int searchForDragon(const Database *const db, const char *identifier)
             printf("Error: non-valid ID: %d\n", id);
             return id;
         }
-           
     }
 
     for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
@@ -109,4 +108,45 @@ bool isID(const char *const identifier)
         }
     }
     return true;
+}
+
+void getDatabaseInfo(const Database *const db, size_t *const max, size_t *const min, size_t *const volant, size_t *const nonVolant)
+{
+    if (db->size == 0)
+    {
+        puts("No dragons in database.");
+        return;
+    }
+
+    *max = db->dragons[0].fierceness;
+    *min = db->dragons[0].fierceness;
+    *volant = 0;
+    *nonVolant = 0;
+
+    // loop all dragons
+    for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
+    {
+        // check max
+        if (db->dragons[dragonIndex].fierceness > *max)
+        {
+            *max = db->dragons[dragonIndex].fierceness;
+        }
+
+        // check min
+        if (db->dragons[dragonIndex].fierceness < *min)
+        {
+            *min = db->dragons[dragonIndex].fierceness;
+        }
+
+        // check volant
+        if (db->dragons[dragonIndex].isVolant == 'Y')
+        {
+            (*volant)++;
+        }
+        else
+        {
+            assert(db->dragons[dragonIndex].isVolant == 'N');
+            (*nonVolant)++;
+        }
+    }
 }

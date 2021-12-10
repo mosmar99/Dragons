@@ -42,4 +42,7 @@ int searchForDragon(const Database *const, const char *);
 // Returns whether or not the string entered by user is an integer or name 
 bool isID(const char *const);
 
+// Gather min and max values for fierceness and #volant and #non-volant
+void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t *const, size_t *const);
+
 #endif

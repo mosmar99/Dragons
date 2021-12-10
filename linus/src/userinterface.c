@@ -59,7 +59,7 @@ void executeCommands(Database *db)
             printOneDragon(db);
             break;
         case 7:
-
+            printDatabaseInfo(db);
             break;
         case 8:
 
@@ -185,4 +185,44 @@ void getDragonNameOrId(char *identifier)
 {
     printf("\nEnter ID or name of dragon: ");
     scanf("%24s", identifier);
+}
+
+void printDatabaseInfo(const Database *const db)
+{
+    puts("");
+    const size_t sizeWidth = 4;
+    const size_t fiercenessWidth = 13;
+    const size_t volantWidth = 7;
+    const size_t nonVolantWidth = 10;
+
+    size_t max;
+    size_t min;
+    size_t volant;
+    size_t nonVolant;
+    getDatabaseInfo(db, &max, &min, &volant, &nonVolant);
+
+    puts("---------------------------------------------------------");
+    printf("%*s  %*s  %*s  %*s  %*s\n", sizeWidth, "Size", fiercenessWidth, "MinFierceness", fiercenessWidth, "MaxFierceness", volantWidth, "#Volant", nonVolantWidth, "#NonVolant");
+    puts("---------------------------------------------------------");
+
+    // print size
+    printf("%*llu", sizeWidth, db->size);
+
+    // don't print anything else if database is empty
+    if (db->size > 0)
+    {
+        // print min fierceness
+        printf("  %*llu", fiercenessWidth, min);
+
+        // print max fierceness
+        printf("  %*llu", fiercenessWidth, max);
+
+        // print volant
+        printf("  %*llu", volantWidth, volant);
+
+        // print non-volant
+        printf("  %*llu", nonVolantWidth, nonVolant);
+
+        puts("");
+    }
 }
