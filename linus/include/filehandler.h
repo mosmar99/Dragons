@@ -8,9 +8,9 @@
 #include "dragon.h"
 
 // Loads the content in .txt file into the database
-void loadDatabase(char *, Database *);
+void loadDatabase(const char *const, Database *const);
 
 // Stores the database in a chosen file
-void saveDatabase(char *, Database *);
+void saveDatabase(const char *const, const Database *const);
 
 #endif

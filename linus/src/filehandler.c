@@ -1,7 +1,7 @@
 #include "filehandler.h"
 #include "database.h"
 
-void loadDatabase(char *filename, Database *db)
+void loadDatabase(const char *const filename, Database *const db)
 {
     FILE *filePtr = fopen(filename, "r");
     if (!filePtr)
@@ -65,6 +65,33 @@ void loadDatabase(char *filename, Database *db)
     fclose(filePtr);
 }
 
-void saveDatabase(char *filename, Database *db)
+void saveDatabase(const char *const filename, const Database *const db)
 {
+    FILE *filePtr = fopen("linus/files/dragons_test.txt", "w");
+    if (!filePtr)
+    {
+        printf("Error: failed to open %s.", "linus/files/dragons_test.txt");
+        exit(-1);
+    }
+
+    // write database size
+    fprintf(filePtr, "%llu", db->size);
+
+    // loop through all dragons
+    for (size_t i = 0; i < db->size; i++)
+    {
+        // write id
+        fprintf(filePtr, "%llu", db->dragons[i].id);
+
+        // name
+        fprintf(filePtr, "%s", db->dragons[i].name);
+
+        // volant
+        fprintf(filePtr, "%s", db->dragons[i].isVolant);
+
+        // # of colours
+        fprintf(filePtr, "%llu", db->dragons[i].numColours);
+    }
+    
+    
 }
