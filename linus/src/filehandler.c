@@ -68,7 +68,7 @@ void loadDatabase(const char *const filename, Database *const db)
 
 void saveDatabase(const char *const filename, const Database *const db)
 {
-    FILE *filePtr = fopen("linus/files/dragons_test.txt", "w");
+    FILE *filePtr = fopen(filename, "w");
     if (!filePtr)
     {
         printf("Error: failed to open %s.\n", filename);
