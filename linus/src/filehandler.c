@@ -11,18 +11,13 @@ void loadDatabase(char *filename, Database *db)
     }
 
     // read how many dragons there are in the list
-    size_t numbOfDragons;
-    fscanf(filePtr, "%llu", &numbOfDragons);
-    db->size = numbOfDragons;
+    fscanf(filePtr, "%llu", &db->size);
 
-    size_t dragonIndex = 0;                               // count dragons
-    while (dragonIndex < numbOfDragons || !feof(filePtr)) // loop through all dragons
+    for (size_t dragonIndex = 0; dragonIndex < db->size && !feof(filePtr); dragonIndex++) // loop through all dragons
     {
         // read id
-        size_t id;
-        fscanf(filePtr, "%llu", &id);
-        assert(id > 0);
-        db->dragons[dragonIndex].id = id;
+        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].id);
+        assert(db->dragons[dragonIndex].id > 0);
 
         // read name
         db->dragons[dragonIndex].name = calloc(MAX_NAME, sizeof(char));
@@ -34,25 +29,19 @@ void loadDatabase(char *filename, Database *db)
         fscanf(filePtr, "%49s", db->dragons[dragonIndex].name);
 
         // read volant
-        char volant;
-        fscanf(filePtr, "%s", &volant);
-        assert(volant == 'Y' || volant == 'N');
-        db->dragons[dragonIndex].isVolant = volant;
+        fscanf(filePtr, "%s", &db->dragons[dragonIndex].isVolant);
+        assert(db->dragons[dragonIndex].isVolant == 'Y' || db->dragons[dragonIndex].isVolant == 'N');
 
         // read fierceness
-        size_t fierceness;
-        fscanf(filePtr, "%llu", &fierceness);
-        assert(fierceness >= 1 && fierceness <= 10);
-        db->dragons[dragonIndex].fierceness = fierceness;
+        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].fierceness);
+        assert(db->dragons[dragonIndex].fierceness >= 1 && db->dragons[dragonIndex].fierceness <= 10);
 
         // read # of colours
-        size_t numbOfColours;
-        fscanf(filePtr, "%llu", &numbOfColours);
-        assert(numbOfColours <= MAX_COLOURS);
-        db->dragons[dragonIndex].numColours = numbOfColours;
+        fscanf(filePtr, "%llu", &db->dragons[dragonIndex].numColours);
+        assert(db->dragons[dragonIndex].numColours <= MAX_COLOURS);
 
         // all the colours
-        for (size_t i = 0; i < numbOfColours && i < MAX_COLOURS && !feof(filePtr); i++)
+        for (size_t i = 0; i < db->dragons[dragonIndex].numColours && i < MAX_COLOURS && !feof(filePtr); i++)
         {
             db->dragons[dragonIndex].colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!db->dragons[dragonIndex].colours[i])
@@ -62,9 +51,7 @@ void loadDatabase(char *filename, Database *db)
             }
             fscanf(filePtr, "%24s", db->dragons[dragonIndex].colours[i]);
         }
-
         // at this point, one dragon has been fully read and stored in the database
-        dragonIndex++;
     } // end dragon loop
 
     // last thing to read in txt file is the next available id
@@ -73,10 +60,7 @@ void loadDatabase(char *filename, Database *db)
         puts("Error: nextId in database does not exist.");
         exit(-1);
     }
-
-    size_t nextId;
-    fscanf(filePtr, "%llu", &nextId);
-    db->nextId = nextId;
+    fscanf(filePtr, "%llu", &db->nextId);
 
     fclose(filePtr);
 }
