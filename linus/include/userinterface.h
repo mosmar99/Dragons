@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "database.h"
+#include "filehandler.h"
 
 // Prints the initial welcome message.
 void printWelcomeMessage();
@@ -11,7 +12,10 @@ void printWelcomeMessage();
 void printMenu();
 
 // Contains functionality of the menu
-void executeCommands(Database *);
+void executeCommands(Database *const);
+
+// Prompts user for the filename of the database (e.g. "dragons.txt")
+void getDatabaseFilename(char *);
 
 // Prints a list of all dragons (brief)
 void listAllDragonsBrief(const Database *const);
@@ -19,13 +23,16 @@ void listAllDragonsBrief(const Database *const);
 // Prints a list of all dragons (detailed)
 void listAllDragonsDetailed(const Database *const);
 
+// Get an ID or name of dragon from user
+void getDragonNameOrId(char *const);
+
 // Prints one dragon
 void printOneDragon(const Database *const);
 
-// Get an ID or name of dragon from user
-void getDragonNameOrId(char *);
-
 // Prints statistics of the database
 void printDatabaseInfo(const Database *const);
+
+// Handles updating a dragon
+void doUpdateDragon(Database *const);
 
 #endif

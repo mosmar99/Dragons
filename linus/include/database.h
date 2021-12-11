@@ -29,20 +29,21 @@ typedef struct Database
 // Creates an empty database on heap and returns pointer to it
 Database *createDatabase();
 
-// Prompts user for the filename of the database (e.g. "dragons.txt")
-void getDatabaseFilename(char *);
-
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);
 
 // Search database for a dragon by name or ID
-// Returns its index or -1 if not found
+// Returns its array index or -1 if not found
 int searchForDragon(const Database *const, const char *);
 
-// Returns whether or not the string entered by user is an integer or name 
+// Returns whether or not the string entered by user is an integer or name
 bool isID(const char *const);
 
-// Gather min and max values for fierceness and #volant and #non-volant
+// Gather min and max values for fierceness, #volant and #non-volant
 void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t *const, size_t *const);
+
+// Finds the array index given a dragon's id
+// Returns -1 if not found
+int idToIndex(const Database *const, const unsigned int *const);
 
 #endif

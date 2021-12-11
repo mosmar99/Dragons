@@ -26,7 +26,7 @@ void printMenu()
     puts("------------------------------------------");
 }
 
-void executeCommands(Database *db)
+void executeCommands(Database *const db)
 {
     int choice = -2;
     while (choice != -1)
@@ -44,7 +44,7 @@ void executeCommands(Database *db)
 
             break;
         case 2:
-
+            doUpdateDragon(db);
             break;
         case 3:
 
@@ -73,6 +73,13 @@ void executeCommands(Database *db)
             break;
         }
     }
+}
+
+void getDatabaseFilename(char *filename)
+{
+    printf("Enter the name of the database: ");
+    fflush(stdin);
+    scanf("%49s", filename);
 }
 
 void listAllDragonsBrief(const Database *const db)
@@ -135,18 +142,23 @@ void listAllDragonsDetailed(const Database *const db)
     }
 }
 
+void getDragonNameOrId(char *const identifier)
+{
+    printf("\nEnter ID or name of dragon: ");
+    fflush(stdin);
+    scanf("%24s", identifier);
+}
+
 void printOneDragon(const Database *const db)
 {
     puts("");
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
-    int id = searchForDragon(db, identifier);
-    if (id < 1 || id > db->size)
+    int ix = searchForDragon(db, identifier);
+    if (ix < 0 || ix >= db->size)
     {
-        puts("Error: dragon not found");
         return;
     }
-    id--; // dragon id start at 1, not 0
     const size_t idWidth = 5;
     const size_t nameWidth = MAX_NAME;
     const size_t volantWidth = 6;
@@ -158,33 +170,27 @@ void printOneDragon(const Database *const db)
     puts("--------------------------------------------------------------------------------");
 
     // print id
-    printf("%*llu", idWidth, db->dragons[id].id);
+    printf("%*llu", idWidth, db->dragons[ix].id);
 
     // print name
-    printf("  %-*s", nameWidth, db->dragons[id].name);
+    printf("  %-*s", nameWidth, db->dragons[ix].name);
 
     // print volant
-    printf("%*c", volantWidth, db->dragons[id].isVolant);
+    printf("%*c", volantWidth, db->dragons[ix].isVolant);
 
     // print fierceness
-    printf("  %*llu", fiercenessWidth, db->dragons[id].fierceness);
+    printf("  %*llu", fiercenessWidth, db->dragons[ix].fierceness);
 
     // print # of colours
-    printf("  %*llu  ", numColoursWidth, db->dragons[id].numColours);
+    printf("  %*llu  ", numColoursWidth, db->dragons[ix].numColours);
 
     // print all colours
-    for (size_t i = 0; i < db->dragons[id].numColours; i++)
+    for (size_t i = 0; i < db->dragons[ix].numColours; i++)
     {
-        printf("%s ", db->dragons[id].colours[i]);
+        printf("%s ", db->dragons[ix].colours[i]);
     }
 
     puts("");
-}
-
-void getDragonNameOrId(char *identifier)
-{
-    printf("\nEnter ID or name of dragon: ");
-    scanf("%24s", identifier);
 }
 
 void printDatabaseInfo(const Database *const db)
@@ -225,4 +231,19 @@ void printDatabaseInfo(const Database *const db)
 
         puts("");
     }
+}
+
+void doUpdateDragon(Database *const db)
+{
+    char identifier[MAX_NAME - 1];
+    getDragonNameOrId(identifier);
+    int ix = searchForDragon(db, identifier);
+    if (ix < 0 || ix >= db->size)
+    {
+        return;
+    }
+    updateDragon(&db->dragons[ix], &ix);
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
+    puts("Dragon updated.");
 }

@@ -22,12 +22,6 @@ Database *createDatabase()
     return db;
 }
 
-void getDatabaseFilename(char *filename)
-{
-    printf("Enter the name of the database: ");
-    scanf("%49s", filename);
-}
-
 void destroyDatabase(Database *db)
 {
     if (db != NULL)
@@ -64,16 +58,16 @@ int searchForDragon(const Database *const db, const char *identifier)
 {
     bool isName = !isID(identifier);
 
-    // convert the string to an integer
-    long id = -1;
-    if (!isName)
+    int id;
+    if (!isName) // convert the string to an integer
     {
         char *endPtr;
         id = strtol(identifier, &endPtr, 0);
-        if (id < 1)
+        if (id < 1 || idToIndex(db, &id) >= db->size)
         {
             printf("Error: non-valid ID: %d\n", id);
-            return id;
+            puts("Error: dragon not found");
+            return -1;
         }
     }
 
@@ -83,14 +77,14 @@ int searchForDragon(const Database *const db, const char *identifier)
         {
             if (strcmp(db->dragons[dragonIndex].name, identifier) == 0)
             {
-                return db->dragons[dragonIndex].id;
+                return idToIndex(db, &db->dragons[dragonIndex].id);
             }
         }
         else
         {
             if (db->dragons[dragonIndex].id == id)
             {
-                return id;
+                return idToIndex(db, &db->dragons[dragonIndex].id);
             }
         }
     }
@@ -149,4 +143,16 @@ void getDatabaseInfo(const Database *const db, size_t *const max, size_t *const 
             (*nonVolant)++;
         }
     }
+}
+
+int idToIndex(const Database *const db, const unsigned int *const id)
+{
+    for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
+    {
+        if (db->dragons[dragonIndex].id == *id)
+        {
+            return dragonIndex;
+        }
+    }
+    return -1;
 }

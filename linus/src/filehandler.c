@@ -1,12 +1,19 @@
 #include "filehandler.h"
-#include "database.h"
 
 void loadDatabase(const char *const filename, Database *const db)
 {
-    FILE *filePtr = fopen(filename, "r");
+    static char originalFilename[MAX_FILENAME - 1];
+    char filenameToUse[MAX_FILENAME - 1];
+    if (filename)
+    {
+        strcpy(originalFilename, filename); // stores the original filename entered at start of main()
+    }
+    strcpy(filenameToUse, originalFilename);
+
+    FILE *filePtr = fopen(filenameToUse, "r");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.\n", filename);
+        printf("Error: failed to open %s.\n", filenameToUse);
         exit(-1);
     }
 
@@ -69,10 +76,18 @@ void loadDatabase(const char *const filename, Database *const db)
 
 void saveDatabase(const char *const filename, const Database *const db)
 {
-    FILE *filePtr = fopen(filename, "w");
+    static char originalFilename[MAX_FILENAME - 1];
+    char filenameToUse[MAX_FILENAME - 1];
+    if (filename)
+    {
+        strcpy(originalFilename, filename); // stores the original filename entered at start of main()
+    }
+    strcpy(filenameToUse, originalFilename);
+
+    FILE *filePtr = fopen(filenameToUse, "w");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.\n", filename);
+        printf("Error: failed to open %s.\n", filenameToUse);
         exit(-1);
     }
 

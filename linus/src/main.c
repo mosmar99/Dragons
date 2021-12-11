@@ -10,6 +10,7 @@ int main()
     Database *database = createDatabase();
     getDatabaseFilename(filename);
     loadDatabase(filename, database);
+    saveDatabase(filename, database); // needed to initialize and store the original filename in the static variable
 
     puts("");
     printWelcomeMessage();

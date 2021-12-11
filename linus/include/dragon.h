@@ -1,6 +1,11 @@
 #ifndef _DRAGON_H
 #define _DRAGON_H
 
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+
 // The maximum number of colours any dragon can have
 #define MAX_COLOURS 5
 
@@ -19,5 +24,8 @@ typedef struct Dragon
     unsigned int numColours;    // number of colours
     char *colours[MAX_COLOURS]; // which colours
 } Dragon;
+
+// Update a dragon's attributes, excl. name and id
+void updateDragon(Dragon *const, const unsigned int *const);
 
 #endif
