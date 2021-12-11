@@ -35,4 +35,7 @@ void printDatabaseInfo(const Database *const);
 // Handles updating a dragon
 void doUpdateDragon(Database *const);
 
+// Handles inserting a new dragon
+void doInsertDragon(Database *const);
+
 #endif

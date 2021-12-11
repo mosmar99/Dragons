@@ -1,18 +1,20 @@
 #include "dragon.h"
 
-void updateDragon(Dragon *const dragon, const unsigned int *const arrayIndex)
+void updateDragon(Dragon *const dragon)
 {
     // update volant
     char volantTest;
-    printf("\nEnter volant (Y, N): ");
+    printf("Enter volant (Y, N): ");
     fflush(stdin);
     scanf("%c", &volantTest);
     volantTest = toupper(volantTest);
     if (volantTest != 'Y' && volantTest != 'N')
     {
         puts("Error: invalid volant input");
+        puts("Default: N");
+        dragon->isVolant = 'N';
     }
-    else // only update if valid input
+    else
     {
         dragon->isVolant = volantTest;
     }
@@ -25,6 +27,8 @@ void updateDragon(Dragon *const dragon, const unsigned int *const arrayIndex)
     if (fierceTest < 1 || fierceTest > 10)
     {
         puts("Error: invalid range");
+        puts("Default: 1");
+        dragon->fierceness = 1;
     }
     else
     {
@@ -32,7 +36,8 @@ void updateDragon(Dragon *const dragon, const unsigned int *const arrayIndex)
     }
 
     // update all colours
-    size_t numbOfColours = 0;
+    size_t newColours = 0;
+    size_t originalColours = dragon->numColours;
     for (size_t i = 0; i < MAX_COLOURS; i++)
     {
         char colour[MAX_COLOUR_NAME - 1];
@@ -41,15 +46,19 @@ void updateDragon(Dragon *const dragon, const unsigned int *const arrayIndex)
         scanf("%24s", colour);
         if (*colour == '0')
         {
+            // free the remaining colours
+            for (size_t j = i; j < MAX_COLOURS && j < originalColours; j++)
+            {
+                free(dragon->colours[j]);
+                dragon->colours[j] = NULL;
+            }
+            dragon->numColours = newColours;
             return;
         }
-        for (char *ix = colour; *ix != '\0'; ix++)
-        {
-            *ix = toupper(*ix);
-        }
+        stringToUppercase(colour);
 
-        numbOfColours++;
-        if (numbOfColours > dragon->numColours)
+        newColours++;
+        if (newColours > originalColours)
         {
             dragon->colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!dragon->colours[i])
@@ -57,8 +66,16 @@ void updateDragon(Dragon *const dragon, const unsigned int *const arrayIndex)
                 puts("Error: failed to allocate memory for a dragon's colour");
                 exit(-1);
             }
-            dragon->numColours = numbOfColours;
         }
         strcpy(dragon->colours[i], colour);
+    }
+    dragon->numColours = newColours;
+}
+
+void stringToUppercase(char *const name)
+{
+    for (char *ix = name; *ix != '\0'; ix++)
+    {
+        *ix = toupper(*ix);
     }
 }

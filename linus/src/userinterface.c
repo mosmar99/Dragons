@@ -41,7 +41,7 @@ void executeCommands(Database *const db)
             printMenu();
             break;
         case 1:
-
+            doInsertDragon(db);
             break;
         case 2:
             doUpdateDragon(db);
@@ -242,8 +242,43 @@ void doUpdateDragon(Database *const db)
     {
         return;
     }
-    updateDragon(&db->dragons[ix], &ix);
+    puts("");
+    updateDragon(&db->dragons[ix]);
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon updated.");
+}
+
+void doInsertDragon(Database *const db)
+{
+    db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
+    if (!&db->dragons[db->size])
+    {
+        puts("Error: failed to allocate memory for new dragon");
+        exit(-1);
+    }
+
+    // id
+    db->dragons[db->size].id = db->nextId++;
+    const int ix = idToIndex(db, &db->dragons[db->size++].id);
+    assert(ix > 0);
+
+    // name
+    db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
+    if (!db->dragons[ix].name)
+    {
+        puts("Error: failed to allocate memory for new dragon's name");
+        exit(-1);
+    }
+    char name[MAX_NAME - 1];
+    printf("\nEnter name: ");
+    scanf("%24s", name);
+    stringToUppercase(name);
+    strcpy(db->dragons[ix].name, name);
+
+    // rest of the attributes
+    updateDragon(&db->dragons[ix]);
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
+    puts("Dragon inserterd.");
 }
