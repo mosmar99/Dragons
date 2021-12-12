@@ -213,6 +213,7 @@ void sortDragons(Database *db, bool sortByName)
 
 void swapDragons(Dragon *d1, Dragon *d2)
 {
+    
 }
 
 void copyDragon(Dragon *dest, Dragon *src)
