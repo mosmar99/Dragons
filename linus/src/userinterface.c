@@ -47,7 +47,7 @@ void executeCommands(Database *const db)
             doUpdateDragon(db);
             break;
         case 3:
-
+            doDeleteDragon(db);
             break;
         case 4:
             listAllDragonsBrief(db);
@@ -147,6 +147,7 @@ void getDragonNameOrId(char *const identifier)
     printf("\nEnter ID or name of dragon: ");
     fflush(stdin);
     scanf("%24s", identifier);
+    stringToUppercase(identifier);
 }
 
 void printOneDragon(const Database *const db)
@@ -238,7 +239,7 @@ void doUpdateDragon(Database *const db)
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
-    if (ix < 0 || ix >= db->size)
+    if (ix < 0)
     {
         return;
     }
@@ -281,4 +282,24 @@ void doInsertDragon(Database *const db)
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon inserterd.");
+}
+
+void doDeleteDragon(Database *const db)
+{
+    char identifier[MAX_NAME - 1];
+    getDragonNameOrId(identifier);
+    int ix = searchForDragon(db, identifier);
+    if (ix < 0)
+    {
+        return;
+    }
+    // Delete the dragon by repeatedly copying dragons 1 step left and lastly freeing
+    // memory of the last dragon (which has by then copied 1 step left in array)
+    while (!deleteDragon(db, &ix))
+    {
+        ix++;
+    }
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
+    puts("Dragon deleted.");
 }

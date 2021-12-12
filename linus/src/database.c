@@ -156,3 +156,78 @@ int idToIndex(const Database *const db, const unsigned int *const id)
     }
     return -1;
 }
+
+bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
+{
+    /*
+        if not last dragon in array
+            copy next dragon
+        if last dragon in array
+            free all memory occupied by dragon
+            decrement db size
+    */
+    if (!db->size)
+    {
+        return true; // do nothing if database is empty
+    }
+
+    bool isDragonLast = *arrayIx == db->size - 1 ? true : false;
+    if (!isDragonLast)
+    {
+        // copy name
+        strcpy(db->dragons[*arrayIx].name, db->dragons[*arrayIx + 1].name);
+
+        // copy id
+        db->dragons[*arrayIx].id = db->dragons[*arrayIx + 1].id;
+
+        // copy volant
+        db->dragons[*arrayIx].isVolant = db->dragons[*arrayIx + 1].isVolant;
+
+        // copy fierceness
+        db->dragons[*arrayIx].fierceness = db->dragons[*arrayIx + 1].fierceness;
+
+        // copy numColours
+        db->dragons[*arrayIx].numColours = db->dragons[*arrayIx + 1].numColours;
+
+        // copy all colours
+        size_t colourIx = 0;
+        for (; colourIx < db->dragons[*arrayIx + 1].numColours; colourIx++)
+        {
+            // make sure to allocate memory if needed
+            if (!db->dragons[*arrayIx].colours[colourIx])
+            {
+                db->dragons[*arrayIx].colours[colourIx] = calloc(MAX_COLOURS, sizeof(char));
+                if (!db->dragons[*arrayIx].colours[colourIx])
+                {
+                    puts("Error: failed to allocate memory for a dragon's colour.");
+                    exit(-1);
+                }
+            }
+            // then copy a colour
+            strcpy(db->dragons[*arrayIx].colours[colourIx], db->dragons[*arrayIx + 1].colours[colourIx]);
+        }
+
+        // delete any extra colours left behind by the now copied-over dragon
+        for (; colourIx < MAX_COLOURS; colourIx++)
+        {
+            free(db->dragons[*arrayIx].colours[colourIx]);
+            db->dragons[*arrayIx].colours[colourIx] = NULL;
+        }
+    }
+    else
+    {
+        // free name
+        free(db->dragons[*arrayIx].name);
+        db->dragons[*arrayIx].name = NULL;
+
+        // free all colours
+        for (size_t colourIx = 0; colourIx < MAX_COLOURS; colourIx++)
+        {
+            free(db->dragons[*arrayIx].colours[colourIx]);
+            db->dragons[*arrayIx].colours[colourIx] = NULL;
+        }
+
+        db->size--;
+    }
+    return isDragonLast;
+}

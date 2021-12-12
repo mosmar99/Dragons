@@ -38,4 +38,7 @@ void doUpdateDragon(Database *const);
 // Handles inserting a new dragon
 void doInsertDragon(Database *const);
 
+// Handles deleting a dragon
+void doDeleteDragon(Database *const);
+
 #endif
