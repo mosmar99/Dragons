@@ -24,34 +24,26 @@ Database *createDatabase()
 
 void destroyDatabase(Database *db)
 {
-    if (db != NULL)
+    // free memory claimed by all dragons
+    for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
     {
-        // free memory claimed by all dragons
-        for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
+        // free dragon name
+        free(db->dragons[dragonIndex].name);
+        db->dragons[dragonIndex].name = NULL;
+
+        // free all colours of a dragon
+        for (size_t colourIndex = 0; colourIndex < db->dragons[dragonIndex].numColours; colourIndex++)
         {
-            // free dragon name
-            if (db->dragons[dragonIndex].name != NULL)
-            {
-                free(db->dragons[dragonIndex].name);
-                db->dragons[dragonIndex].name = NULL;
-            }
-
-            // free all colours of a dragon
-            for (size_t colourIndex = 0; colourIndex < db->dragons[dragonIndex].numColours; colourIndex++)
-            {
-                if (db->dragons[dragonIndex].colours[colourIndex] != NULL)
-                {
-                    free(db->dragons[dragonIndex].colours[colourIndex]);
-                    db->dragons[dragonIndex].colours[colourIndex] = NULL;
-                }
-            }
+            free(db->dragons[dragonIndex].colours[colourIndex]);
+            db->dragons[dragonIndex].colours[colourIndex] = NULL;
         }
-
-        free(db->dragons);
-
-        free(db);
-        db = NULL;
     }
+
+    free(db->dragons);
+    db->dragons = NULL;
+
+    free(db);
+    db = NULL;
 }
 
 int searchForDragon(const Database *const db, const char *identifier)
@@ -174,45 +166,7 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
     bool isDragonLast = *arrayIx == db->size - 1 ? true : false;
     if (!isDragonLast)
     {
-        // copy name
-        strcpy(db->dragons[*arrayIx].name, db->dragons[*arrayIx + 1].name);
-
-        // copy id
-        db->dragons[*arrayIx].id = db->dragons[*arrayIx + 1].id;
-
-        // copy volant
-        db->dragons[*arrayIx].isVolant = db->dragons[*arrayIx + 1].isVolant;
-
-        // copy fierceness
-        db->dragons[*arrayIx].fierceness = db->dragons[*arrayIx + 1].fierceness;
-
-        // copy numColours
-        db->dragons[*arrayIx].numColours = db->dragons[*arrayIx + 1].numColours;
-
-        // copy all colours
-        size_t colourIx = 0;
-        for (; colourIx < db->dragons[*arrayIx + 1].numColours; colourIx++)
-        {
-            // make sure to allocate memory if needed
-            if (!db->dragons[*arrayIx].colours[colourIx])
-            {
-                db->dragons[*arrayIx].colours[colourIx] = calloc(MAX_COLOURS, sizeof(char));
-                if (!db->dragons[*arrayIx].colours[colourIx])
-                {
-                    puts("Error: failed to allocate memory for a dragon's colour.");
-                    exit(-1);
-                }
-            }
-            // then copy a colour
-            strcpy(db->dragons[*arrayIx].colours[colourIx], db->dragons[*arrayIx + 1].colours[colourIx]);
-        }
-
-        // delete any extra colours left behind by the now copied-over dragon
-        for (; colourIx < MAX_COLOURS; colourIx++)
-        {
-            free(db->dragons[*arrayIx].colours[colourIx]);
-            db->dragons[*arrayIx].colours[colourIx] = NULL;
-        }
+        copyDragon(&db->dragons[*arrayIx], &db->dragons[*arrayIx + 1]);
     }
     else
     {
@@ -230,4 +184,76 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
         db->size--;
     }
     return isDragonLast;
+}
+
+void sortDragons(Database *db, bool sortByName)
+{
+    // Bubblesort
+    for (size_t i = 0; i < db->size - 1; i++)
+    {
+        for (size_t j = 0; j < db->size - i - 1; j++)
+        {
+            if (sortByName)
+            {
+                if (strcmp(db->dragons[j].name, db->dragons[j + 1].name) > 0)
+                {
+                    swapDragons(&db->dragons[j], &db->dragons[j + 1]);
+                }
+            }
+            else
+            {
+                if (db->dragons[j].id > db->dragons[j + 1].id)
+                {
+                    swapDragons(&db->dragons[j], &db->dragons[j + 1]);
+                }
+            }
+        }
+    }
+}
+
+void swapDragons(Dragon *d1, Dragon *d2)
+{
+}
+
+void copyDragon(Dragon *dest, Dragon *src)
+{
+    // copy name
+    strcpy(dest->name, src->name);
+
+    // copy id
+    dest->id = src->id;
+
+    // copy volant
+    dest->isVolant = src->isVolant;
+
+    // copy fierceness
+    dest->fierceness = src->fierceness;
+
+    // copy numColours
+    dest->numColours = src->numColours;
+
+    // copy all colours
+    size_t colourIx = 0;
+    for (; colourIx < dest->numColours; colourIx++)
+    {
+        // allocate memory if needed
+        if (!dest->colours[colourIx])
+        {
+            dest->colours[colourIx] = calloc(MAX_COLOURS, sizeof(char));
+            if (!dest->colours[colourIx])
+            {
+                puts("Error: failed to allocate memory for a dragon's colour.");
+                exit(-1);
+            }
+        }
+        // then copy a colour
+        strcpy(dest->colours[colourIx], src->colours[colourIx]);
+    }
+
+    // delete any extra colours left behind by the now copied-over dragon
+    for (; colourIx < MAX_COLOURS; colourIx++)
+    {
+        free(dest->colours[colourIx]);
+        dest->colours[colourIx] = NULL;
+    }
 }

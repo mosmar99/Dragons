@@ -62,7 +62,7 @@ void executeCommands(Database *const db)
             printDatabaseInfo(db);
             break;
         case 8:
-
+            doSortDragons(db);
             break;
         case -1:
             choice = -1;
@@ -302,4 +302,24 @@ void doDeleteDragon(Database *const db)
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon deleted.");
+}
+
+void doSortDragons(Database *const db)
+{
+    if (db->size <= 1)
+    {
+        return; // pointless to sort empty array or array of size 1
+    }
+
+    puts("");
+    unsigned short choice = 2;
+    do
+    {
+        printf("Enter sort by ID (0) or Name (1): ");
+        fflush(stdin);
+        scanf("%1hu[01]", &choice);
+    } while (!(choice == 0 || choice == 1));
+
+    sortDragons(db, (bool)choice);
+    puts("Database sorted.");
 }

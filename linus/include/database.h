@@ -51,4 +51,10 @@ int idToIndex(const Database *const, const unsigned int *const);
 // Returns true if dragon was last in array
 bool deleteDragon(Database *const, const unsigned int *const);
 
+// Sort the database in ascending order, bool = true by name, bool = false by id
+void sortDragons(Database *const, bool);
+
+// Swaps two dragons
+void swapDragons(Dragon *, Dragon *);
+
 #endif

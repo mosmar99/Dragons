@@ -31,4 +31,7 @@ void updateDragon(Dragon *const);
 // Converts a string to all uppercase
 void stringToUppercase(char *const);
 
+// Copy a dragon to another
+void copyDragon(Dragon *, Dragon *);
+
 #endif

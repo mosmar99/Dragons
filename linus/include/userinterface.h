@@ -41,4 +41,7 @@ void doInsertDragon(Database *const);
 // Handles deleting a dragon
 void doDeleteDragon(Database *const);
 
+// Handles sorting the database
+void doSortDragons(Database *const);
+
 #endif
