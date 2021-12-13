@@ -18,6 +18,6 @@ int main()
     printMenu();
     executeCommands(database);
 
-    saveDatabase(filename, database);
+    saveDatabase(NULL, database);
     destroyDatabase(database);
 }

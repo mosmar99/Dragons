@@ -26,6 +26,12 @@ typedef struct Dragon
 } Dragon;
 
 // Update a dragon's attributes, excl. name and id
-void updateDragon(Dragon *const, const unsigned int *const);
+void updateDragon(Dragon *const);
+
+// Converts a string to all uppercase
+void stringToUppercase(char *const);
+
+// Copy a dragon to another
+void copyDragon(Dragon *, Dragon *);
 
 #endif

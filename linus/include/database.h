@@ -46,4 +46,15 @@ void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t
 // Returns -1 if not found
 int idToIndex(const Database *const, const unsigned int *const);
 
+// Delete a dragon by array index
+// If not last, copies dragon at index + 1
+// Returns true if dragon was last in array
+bool deleteDragon(Database *const, const unsigned int *const);
+
+// Sort the database in ascending order, bool = true by name, bool = false by id
+void sortDragons(Database *const, bool);
+
+// Swaps two dragons
+void swapDragons(Dragon *, Dragon *);
+
 #endif

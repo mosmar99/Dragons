@@ -41,13 +41,13 @@ void executeCommands(Database *const db)
             printMenu();
             break;
         case 1:
-
+            doInsertDragon(db);
             break;
         case 2:
             doUpdateDragon(db);
             break;
         case 3:
-
+            doDeleteDragon(db);
             break;
         case 4:
             listAllDragonsBrief(db);
@@ -62,7 +62,7 @@ void executeCommands(Database *const db)
             printDatabaseInfo(db);
             break;
         case 8:
-
+            doSortDragons(db);
             break;
         case -1:
             choice = -1;
@@ -147,6 +147,7 @@ void getDragonNameOrId(char *const identifier)
     printf("\nEnter ID or name of dragon: ");
     fflush(stdin);
     scanf("%24s", identifier);
+    stringToUppercase(identifier);
 }
 
 void printOneDragon(const Database *const db)
@@ -238,12 +239,87 @@ void doUpdateDragon(Database *const db)
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
-    if (ix < 0 || ix >= db->size)
+    if (ix < 0)
     {
         return;
     }
-    updateDragon(&db->dragons[ix], &ix);
+    puts("");
+    updateDragon(&db->dragons[ix]);
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon updated.");
+}
+
+void doInsertDragon(Database *const db)
+{
+    db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
+    if (!&db->dragons[db->size])
+    {
+        puts("Error: failed to allocate memory for new dragon");
+        exit(-1);
+    }
+
+    // id
+    db->dragons[db->size].id = db->nextId++;
+    const int ix = idToIndex(db, &db->dragons[db->size++].id);
+    assert(ix > 0);
+
+    // name
+    db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
+    if (!db->dragons[ix].name)
+    {
+        puts("Error: failed to allocate memory for new dragon's name");
+        exit(-1);
+    }
+    char name[MAX_NAME - 1];
+    printf("\nEnter name: ");
+    scanf("%24s", name);
+    stringToUppercase(name);
+    strcpy(db->dragons[ix].name, name);
+
+    // rest of the attributes
+    updateDragon(&db->dragons[ix]);
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
+    puts("Dragon inserterd.");
+}
+
+void doDeleteDragon(Database *const db)
+{
+    char identifier[MAX_NAME - 1];
+    getDragonNameOrId(identifier);
+    int ix = searchForDragon(db, identifier);
+    if (ix < 0)
+    {
+        return;
+    }
+    // Delete the dragon by repeatedly copying dragons 1 step left and lastly freeing
+    // memory of the last dragon (which has by then copied 1 step left in array)
+    while (!deleteDragon(db, &ix))
+    {
+        ix++;
+    }
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
+    puts("Dragon deleted.");
+}
+
+void doSortDragons(Database *const db)
+{
+    if (db->size <= 1)
+    {
+        return; // pointless to sort empty array or array of size 1
+    }
+
+    puts("");
+    unsigned short choice = 2;
+    do
+    {
+        printf("Enter sort by ID (0) or Name (1): ");
+        fflush(stdin);
+        scanf("%1hu[01]", &choice);
+    } while (!(choice == 0 || choice == 1));
+
+    sortDragons(db, (bool)choice);
+    puts("Database sorted.");
 }
