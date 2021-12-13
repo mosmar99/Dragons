@@ -15,5 +15,7 @@ int main()
     executeCommands(database);
     saveDatabase(filename, database);
     destroyDatabase(database);
+
+    return 0;
 }
 

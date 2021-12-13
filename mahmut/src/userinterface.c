@@ -55,7 +55,7 @@ void executeCommands(Database *db)
             listAllDragonsDetailed(db);
             break;
         case 6:
-
+            listOneDragonDetailed(db);
             break;
         case 7:
 
@@ -99,3 +99,7 @@ void listAllDragonsDetailed(const Database *db) {
     }
 }
 
+void listOneDragonDetailed(const Database *db) {
+    printf("Enter id or name of dragon: ");
+    
+}
