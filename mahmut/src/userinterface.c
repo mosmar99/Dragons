@@ -100,6 +100,42 @@ void listAllDragonsDetailed(const Database *db) {
 }
 
 void listOneDragonDetailed(const Database *db) {
-    printf("Enter id or name of dragon: ");
+    // reads input
+    char input[MAX_NAME] = {0};
+    unsigned int tmpNr;
+    bool isId = true, isDrgName = true;
+    printf("\nEnter id or name of dragon: ");
+    fflush(stdin);
+    scanf("%49s", input);
     
+    // CHECKS VALIDITY OF INPUT
+
+    // check if no value is entered
+    if ( input == "" ) {
+        printf("--> Invalid id or name");
+    }
+
+    // check if input is a string
+    for (size_t i = 0; input[i] != '\n'; i++) {
+        printf("\n%c ", strlen(input));
+        if (!isalpha(input[i]))
+        {
+            printf("%d ", !isalpha(input[i]));
+            printf("%d ", input[i]);
+            isDrgName = false;    
+        }
+    }
+
+    // check if input is a string
+    for (size_t i = 0; i < strlen(input); i++) {
+        if (!isdigit(input[i]))
+        {
+            isId = false;
+        }
+    }
+
+    // if the input is neither an ID nor a name, then, it is invalid input
+    if( isId == false && isDrgName == false) {
+        printf("--> Invalid id or name");
+    }
 }
