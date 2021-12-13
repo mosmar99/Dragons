@@ -2,6 +2,10 @@
 #define _USERINTERFACE_H
 
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+#include "stdbool.h"
 #include "database.h"
 
 // Prints welcome message
