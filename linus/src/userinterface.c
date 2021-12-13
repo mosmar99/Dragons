@@ -1,4 +1,42 @@
 #include "userinterface.h"
+#include "filehandler.h"
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+
+// Prints a list of all dragons (brief)
+static void listAllDragonsBrief(const Database *const);
+
+// Prints a list of all dragons (detailed)
+static void listAllDragonsDetailed(const Database *const);
+
+// Get an ID or name of dragon from user
+static void getDragonNameOrId(char *const);
+
+// Prints one dragon
+static void printOneDragon(const Database *const);
+
+// Prints statistics of the database
+static void printDatabaseInfo(const Database *const);
+
+// Handles updating a dragon
+static void doUpdateDragon(Database *const);
+
+// Handles inserting a new dragon
+static void doInsertDragon(Database *const);
+
+// Handles deleting a dragon
+static void doDeleteDragon(Database *const);
+
+// Handles sorting the database
+static void doSortDragons(Database *const);
+
+// Update a dragon's attributes, excl. name and id
+static void updateDragon(Dragon *const);
+
+// Converts a string to all uppercase
+static void stringToUppercase(char *const);
 
 void printWelcomeMessage()
 {
@@ -75,7 +113,7 @@ void executeCommands(Database *const db)
     }
 }
 
-void getDatabaseFilename(char *filename)
+void getDatabaseFilename(char *const filename)
 {
     printf("Enter the name of the database: ");
     fflush(stdin);
@@ -252,10 +290,19 @@ void doUpdateDragon(Database *const db)
 
 void doInsertDragon(Database *const db)
 {
+    // check if it's needed to expand database capacity
+    if (db->size == db->capacity)
+    {
+        expandCapacity(db);
+        saveDatabase(NULL, db);
+        loadDatabase(NULL, db);
+    }
+
     db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
     if (!&db->dragons[db->size])
     {
         puts("Error: failed to allocate memory for new dragon");
+        getchar();
         exit(-1);
     }
 
@@ -269,6 +316,7 @@ void doInsertDragon(Database *const db)
     if (!db->dragons[ix].name)
     {
         puts("Error: failed to allocate memory for new dragon's name");
+        getchar();
         exit(-1);
     }
     char name[MAX_NAME - 1];
@@ -321,5 +369,92 @@ void doSortDragons(Database *const db)
     } while (!(choice == 0 || choice == 1));
 
     sortDragons(db, (bool)choice);
+    saveDatabase(NULL, db);
+    loadDatabase(NULL, db);
     puts("Database sorted.");
+}
+
+void updateDragon(Dragon *const dragon)
+{
+    // update volant
+    char volantTest;
+    printf("Enter volant (Y, N): ");
+    fflush(stdin);
+    scanf("%c", &volantTest);
+    volantTest = toupper(volantTest);
+    if (volantTest != 'Y' && volantTest != 'N')
+    {
+        puts("Error: invalid volant input");
+        puts("Default: N");
+        dragon->isVolant = 'N';
+    }
+    else
+    {
+        dragon->isVolant = volantTest;
+    }
+
+    // update fierceness
+    int fierceTest;
+    printf("Enter fierceness (1-10): ");
+    fflush(stdin);
+    scanf("%2d[0123456789]", &fierceTest);
+    if (fierceTest < 1 || fierceTest > 10)
+    {
+        puts("Error: invalid range");
+        puts("Default: 1");
+        dragon->fierceness = 1;
+    }
+    else
+    {
+        dragon->fierceness = fierceTest;
+    }
+
+    // update all colours
+    size_t newColours = 0;
+    size_t originalColours = dragon->numColours;
+    for (size_t i = 0; i < MAX_COLOURS; i++)
+    {
+        char colour[MAX_COLOUR_NAME - 1];
+        printf("Colour %llu (of %llu) (0 to stop): ", i + 1, MAX_COLOURS);
+        fflush(stdin);
+        scanf("%24s", colour);
+        for (char *ix = colour; *ix != '\0'; ix++)
+        {
+            *ix = toupper(*ix);
+        }
+
+        if (*colour == '0')
+        {
+            // free the remaining colours
+            for (size_t j = i; j < MAX_COLOURS && j < originalColours; j++)
+            {
+                free(dragon->colours[j]);
+                dragon->colours[j] = NULL;
+            }
+            dragon->numColours = newColours;
+            return;
+        }
+
+        newColours++;
+        if (newColours > originalColours)
+        {
+            dragon->colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!dragon->colours[i])
+            {
+                puts("Error: failed to allocate memory for a dragon's colour");
+                getchar();
+                exit(-1);
+            }
+        }
+        strcpy(dragon->colours[i], colour);
+    }
+    dragon->numColours = newColours;
+}
+
+void stringToUppercase(char *const str)
+{
+    for (char *ix = str; *ix != '\0'; ix++)
+    {
+        *ix = toupper(*ix);
+    }
 }
