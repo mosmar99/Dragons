@@ -13,4 +13,11 @@ void printMenu(void);
 // Contains functionality of the menu
 void executeCommands(Database *database);
 
+// display brief (i.e: Name and ID) information about all dragons within the database
+void listAllDragonsBrief(const Database *db);
+
+// display detailed information about all dragons within the database
+// ID, Name, Volant, #Colours, Colors
+void listAllDragonsDetailed(const Database *db);
+
 #endif

@@ -6,7 +6,6 @@
 int main()
 {
     char filename[MAX_FILENAME - 1];
-
     Database *database = createDatabase();
     getDatabaseFilename(filename);
     loadDatabase(filename, database);
@@ -14,7 +13,7 @@ int main()
     puts("");
     printMenu();
     executeCommands(database);
-    //saveDatabase(filename, database);
+    saveDatabase(filename, database);
     destroyDatabase(database);
 }
 

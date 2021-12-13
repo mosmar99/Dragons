@@ -32,6 +32,17 @@ void destroyDatabase(Database *db)
 {
     if (db != NULL)
     {
+        // MISSION: Free all allocated memory, 
+        for (int drgIdx = 0; drgIdx < (*db).size ; drgIdx++) { // (*db).size = dragonCount
+            // free calloc for name found in filehandler.c
+            free((*db).dragons[drgIdx].name), (*db).dragons[drgIdx].name = NULL;
+
+            // free all allocated space for all colours corresponding to each individual dragon
+            for (int clrIdx = 0; clrIdx < (*db).dragons[drgIdx].numColours; clrIdx++) {
+                free((*db).dragons[drgIdx].colours[clrIdx]), (*db).dragons[drgIdx].colours[clrIdx] = NULL;
+            }
+        }
+
         free(db);
         db = NULL;
     }

@@ -9,9 +9,9 @@ void printWelcomeMessage(void) {
 }
 
 void printMenu(void){
-    puts("------------------------------------------");
+    puts("---------------------------------------------------------------");
     puts("Menu");
-    puts("------------------------------------------");
+    puts("---------------------------------------------------------------");
     puts("0. Display menu.");
     puts("1. Insert a dragon.");
     puts("2. Update a drago.");
@@ -22,7 +22,7 @@ void printMenu(void){
     puts("7. List database statistics.");
     puts("8. Sort database.");
     puts("-1. Quit.");
-    puts("------------------------------------------");
+    puts("---------------------------------------------------------------");
 }
 
 void executeCommands(Database *db)
@@ -40,7 +40,7 @@ void executeCommands(Database *db)
             printMenu();
             break;
         case 1:
-
+    
             break;
         case 2:
 
@@ -49,10 +49,10 @@ void executeCommands(Database *db)
 
             break;
         case 4:
-
+            listAllDragonsBrief(db);
             break;
         case 5:
-
+            listAllDragonsDetailed(db);
             break;
         case 6:
 
@@ -73,3 +73,29 @@ void executeCommands(Database *db)
         }
     }
 }
+
+void listAllDragonsBrief(const Database *db) {
+    // print each dragons name and id (from the database)
+    printf("---------------------------------------------------------------\n");
+    printf("ID Name\n");
+    printf("---------------------------------------------------------------\n");
+    for (size_t drgIdx = 0; drgIdx < (*db).size; drgIdx++) {
+        printf(" %u %s\n",(*db).dragons[drgIdx].id, (*db).dragons[drgIdx].name);
+    }
+}
+
+void listAllDragonsDetailed(const Database *db) {
+    // print each dragons name and id (from the database)
+    printf("---------------------------------------------------------------\n");
+    printf("ID Name\t\tVolant Fierceness #Colours Colors\n");
+    printf("---------------------------------------------------------------\n");
+    for (size_t drgIdx = 0; drgIdx < (*db).size; drgIdx++) {
+        printf(" %1u %s", (*db).dragons[drgIdx].id, (*db).dragons[drgIdx].name);
+        printf("\t%6c %10u %8u", (*db).dragons[drgIdx].isVolant, (*db).dragons[drgIdx].fierceness, (*db).dragons[drgIdx].numColours); 
+        for (size_t clrIdx = 0; clrIdx < (*db).dragons[drgIdx].numColours; clrIdx++) {
+            printf(" %s", (*db).dragons[drgIdx].colours[clrIdx]);
+        }
+        puts("");
+    }
+}
+

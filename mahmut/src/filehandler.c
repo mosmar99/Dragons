@@ -39,12 +39,13 @@ void loadDatabase(char *filename, Database *db)
             (*db).dragons[drgIdx].colours[currCol] = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!(*db).dragons[drgIdx].colours[currCol]) puts("Err: Failed to allocate memory forc dragon color"), exit(-1);
             fscanf(drgFilePtr, "%24s", (*db).dragons[drgIdx].colours[currCol]);
+            printf("\n%s\n", (*db).dragons[drgIdx].colours[currCol]);
         }
     } // end dragon loop
 
     // read next available ID for a potentially newly added dragon to our database
     if(feof(drgFilePtr)) puts("Err: nextId does not exist in database"), exit(-1);
-    fscanf(drgFilePtr, "%d", &nextId);
+    fscanf(drgFilePtr, "%d", &nextId), assert(nextId > 0);
     (*db).nextId = nextId;
 
     fclose(drgFilePtr);
@@ -52,4 +53,23 @@ void loadDatabase(char *filename, Database *db)
 
 void saveDatabase(char *filename, Database *db)
 {
+    FILE *drgFilePtr;
+    if((drgFilePtr = fopen(filename, "w")) == NULL) puts("Err: File could not be opened"), exit(-1);
+     
+    // write dragonCount
+    fprintf(drgFilePtr, "%llu\n", (*db).size);
+
+    // get and write all data about each indvidual dragon
+    for (size_t drgIdx = 0; drgIdx < (*db).size; drgIdx++) {
+        fprintf(drgFilePtr, "%llu\n", (*db).dragons[drgIdx].id); // write id
+        fprintf(drgFilePtr, "%s\n", (*db).dragons[drgIdx].name); // write name
+        fprintf(drgFilePtr, "%c\n", (*db).dragons[drgIdx].isVolant); // write volant
+        fprintf(drgFilePtr, "%llu\n", (*db).dragons[drgIdx].fierceness); // write fierceness
+        fprintf(drgFilePtr, "%llu\n", (*db).dragons[drgIdx].numColours); // write colorCount
+        for (size_t clrIdx = 0; clrIdx < (*db).dragons[drgIdx].numColours; clrIdx++) {
+            fprintf(drgFilePtr, "%s\n", (*db).dragons[drgIdx].colours[clrIdx]);
+        } // end inner loop
+    } // end outer loop
+    fprintf(drgFilePtr, "%llu", (*db).nextId);
+    fclose(drgFilePtr);
 }
