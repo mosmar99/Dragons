@@ -23,12 +23,12 @@ typedef struct Dragon
 } Dragon;
 
 // Swaps two dragons
-void swapDragons(Dragon *const, Dragon *const);
+void swapDragons(Dragon *const d1, Dragon *const d2);
 
-// Free all colours of a dragon within the given range
-void freeColours(Dragon *const, size_t, const size_t);
+// Free all colours of a dragon within the given indexes
+void freeColours(Dragon *const d, size_t, const size_t);
 
 // Copy a dragon to another
-void copyDragon(Dragon *const, const Dragon *const);
+void copyDragon(Dragon *const dest, const Dragon *const src);
 
 #endif

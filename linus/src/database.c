@@ -1,7 +1,7 @@
 #include "database.h"
 
 // Returns whether or not the string entered by user is an integer or name
-static bool isID(const char *const);
+static bool isID(const char *const str);
 
 Database *createDatabase()
 {
@@ -65,7 +65,7 @@ void destroyDatabase(Database *db)
         db->dragons[dragonIndex].name = NULL;
 
         // free all colours of a dragon
-        freeColours(&db->dragons[dragonIndex], 0, db->dragons[dragonIndex].numColours);
+        freeColours(&db->dragons[dragonIndex], 0, db->dragons[dragonIndex].numColours - 1);
     }
 
     free(db->dragons);
@@ -75,7 +75,7 @@ void destroyDatabase(Database *db)
     db = NULL;
 }
 
-int searchForDragon(const Database *const db, const char *identifier)
+int searchForDragon(const Database *const db, const char *const identifier)
 {
     bool isName = !isID(identifier);
 

@@ -6,30 +6,12 @@
 void swapDragons(Dragon *const d1, Dragon *const d2)
 {
     // set up a temporary dragon
-    Dragon *temp = malloc(sizeof(Dragon));
+    Dragon *temp = calloc(1, sizeof(Dragon));
     if (!temp)
     {
         puts("Error: failed to allocate memory for dragon");
         getchar();
         exit(-1);
-    }
-
-    temp->name = calloc(MAX_NAME, sizeof(char));
-    if (!temp->name)
-    {
-        puts("Error: failed to allocate memory for dragon name.");
-        getchar();
-        exit(-1);
-    }
-    for (size_t i = 0; i < MAX_COLOURS; i++)
-    {
-        *(temp->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
-        if (!temp->colours[i])
-        {
-            puts("Error: failed to allocate memory for dragon colour");
-            getchar();
-            exit(-1);
-        }
     }
 
     // do the swap
@@ -40,7 +22,7 @@ void swapDragons(Dragon *const d1, Dragon *const d2)
     // clean up the temporary dragon
     free(temp->name);
     temp->name = NULL;
-    freeColours(temp, 0, MAX_COLOURS);
+    freeColours(temp, 0, MAX_COLOURS - 1);
     free(temp);
     temp = NULL;
 }
@@ -92,13 +74,13 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
     }
 
     // free any extra colours left behind by the now copied-over dragon
-    freeColours(dest, colourIx, MAX_COLOURS);
+    freeColours(dest, colourIx, MAX_COLOURS - 1);
 }
 
 void freeColours(Dragon *dragon, size_t lower, const size_t higher)
 {
-    assert(higher <= MAX_COLOURS);
-    for (; lower < higher; lower++)
+    assert(higher < MAX_COLOURS);
+    for (; lower <= higher; lower++)
     {
         free(*(dragon->colours + lower));
         *(dragon->colours + lower) = NULL;

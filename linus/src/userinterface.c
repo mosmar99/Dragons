@@ -6,37 +6,37 @@
 #include <stdlib.h>
 
 // Prints a list of all dragons (brief)
-static void listAllDragonsBrief(const Database *const);
+static void listAllDragonsBrief(const Database *const db);
 
 // Prints a list of all dragons (detailed)
-static void listAllDragonsDetailed(const Database *const);
+static void listAllDragonsDetailed(const Database *const db);
 
 // Get an ID or name of dragon from user
-static void getDragonNameOrId(char *const);
+static void getDragonNameOrId(char *const str);
 
 // Prints one dragon
-static void printOneDragon(const Database *const);
+static void printOneDragon(const Database *const db);
 
 // Prints statistics of the database
-static void printDatabaseInfo(const Database *const);
+static void printDatabaseInfo(const Database *const db);
 
 // Handles updating a dragon
-static void doUpdateDragon(Database *const);
+static void doUpdateDragon(Database *const db);
 
 // Handles inserting a new dragon
-static void doInsertDragon(Database *const);
+static void doInsertDragon(Database *const db);
 
 // Handles deleting a dragon
-static void doDeleteDragon(Database *const);
+static void doDeleteDragon(Database *const db);
 
 // Handles sorting the database
-static void doSortDragons(Database *const);
+static void doSortDragons(Database *const db);
 
 // Update a dragon's attributes, excl. name and id
-static void updateDragon(Dragon *const);
+static void updateDragon(Dragon *const db);
 
 // Converts a string to all uppercase
-static void stringToUppercase(char *const);
+static void stringToUppercase(char *const str);
 
 void printWelcomeMessage()
 {
