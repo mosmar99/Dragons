@@ -1,6 +1,8 @@
 #ifndef _DRAGON_H
 #define _DRAGON_H
 
+#include <stdlib.h>
+
 // The maximum number of colours any dragon can have
 #define MAX_COLOURS 5
 
@@ -19,5 +21,14 @@ typedef struct Dragon
     unsigned int numColours;    // number of colours
     char *colours[MAX_COLOURS]; // which colours
 } Dragon;
+
+// Swaps two dragons
+void swapDragons(Dragon *const, Dragon *const);
+
+// Free all colours of a dragon within the given range
+void freeColours(Dragon *const, size_t, const size_t);
+
+// Copy a dragon to another
+void copyDragon(Dragon *const, const Dragon *const);
 
 #endif

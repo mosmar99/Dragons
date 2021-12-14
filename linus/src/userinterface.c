@@ -123,7 +123,7 @@ void getDatabaseFilename(char *const filename)
 void listAllDragonsBrief(const Database *const db)
 {
     puts("");
-    const size_t idWidth = 4;
+    const size_t idWidth = 5;
     puts("--------------------------------------------------------------------------------");
     printf("%*s  %s\n", idWidth, "ID", "Name");
     puts("--------------------------------------------------------------------------------");
@@ -173,7 +173,7 @@ void listAllDragonsDetailed(const Database *const db)
         // print all colours
         for (size_t i = 0; i < db->dragons[dragonIndex].numColours; i++)
         {
-            printf("%s ", db->dragons[dragonIndex].colours[i]);
+            printf("%s ", *(db->dragons[dragonIndex].colours + i));
         }
 
         puts("");
@@ -226,7 +226,7 @@ void printOneDragon(const Database *const db)
     // print all colours
     for (size_t i = 0; i < db->dragons[ix].numColours; i++)
     {
-        printf("%s ", db->dragons[ix].colours[i]);
+        printf("%s ", *(db->dragons[ix].colours + i));
     }
 
     puts("");
@@ -428,8 +428,8 @@ void updateDragon(Dragon *const dragon)
             // free the remaining colours
             for (size_t j = i; j < MAX_COLOURS && j < originalColours; j++)
             {
-                free(dragon->colours[j]);
-                dragon->colours[j] = NULL;
+                free(*(dragon->colours + j));
+                *(dragon->colours + j) = NULL;
             }
             dragon->numColours = newColours;
             return;
@@ -438,15 +438,15 @@ void updateDragon(Dragon *const dragon)
         newColours++;
         if (newColours > originalColours)
         {
-            dragon->colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
-            if (!dragon->colours[i])
+            *(dragon->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!*(dragon->colours + i))
             {
                 puts("Error: failed to allocate memory for a dragon's colour");
                 getchar();
                 exit(-1);
             }
         }
-        strcpy(dragon->colours[i], colour);
+        strcpy(*(dragon->colours + i), colour);
     }
     dragon->numColours = newColours;
 }
