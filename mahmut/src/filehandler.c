@@ -19,7 +19,10 @@ void loadDatabase(char *filename, Database *db)
 
         // get name
         (*db).dragons[drgIdx].name = calloc(MAX_NAME, sizeof(char));
-        if(!(*db).dragons[drgIdx].name) puts("Err: Failed to allocate memory for dragon name"), exit(-1);
+        if(!(*db).dragons[drgIdx].name) {
+            puts("Err: Failed to allocate memory for dragon name");
+            exit(-1);
+        }
         fscanf(drgFilePtr, "%49s", (*db).dragons[drgIdx].name);
 
         // get volant
