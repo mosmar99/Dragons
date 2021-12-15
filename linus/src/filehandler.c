@@ -1,4 +1,7 @@
 #include "filehandler.h"
+#include <assert.h>
+#include <stdbool.h>
+#include <string.h>
 
 void loadDatabase(const char *const filename, Database *const db)
 {
@@ -14,6 +17,7 @@ void loadDatabase(const char *const filename, Database *const db)
     if (!filePtr)
     {
         printf("Error: failed to open %s.\n", filenameToUse);
+        getchar();
         exit(-1);
     }
 
@@ -32,6 +36,7 @@ void loadDatabase(const char *const filename, Database *const db)
         if (!db->dragons[dragonIndex].name)
         {
             puts("Error: failed to allocate memory for a dragon's name.");
+            getchar();
             exit(-1);
         }
         fscanf(filePtr, "%24s", db->dragons[dragonIndex].name);
@@ -55,6 +60,7 @@ void loadDatabase(const char *const filename, Database *const db)
             if (!db->dragons[dragonIndex].colours[i])
             {
                 puts("Error: failed to allocate memory for a dragon's colour.");
+                getchar();
                 exit(-1);
             }
             fscanf(filePtr, "%24s", db->dragons[dragonIndex].colours[i]);
@@ -66,6 +72,7 @@ void loadDatabase(const char *const filename, Database *const db)
     if (feof(filePtr))
     {
         puts("Error: nextId in database does not exist.");
+        getchar();
         exit(-1);
     }
     fscanf(filePtr, "%d", &db->nextId);
@@ -88,6 +95,7 @@ void saveDatabase(const char *const filename, const Database *const db)
     if (!filePtr)
     {
         printf("Error: failed to open %s.\n", filenameToUse);
+        getchar();
         exit(-1);
     }
 

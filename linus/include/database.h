@@ -1,9 +1,9 @@
 #ifndef _DATABASE_H
 #define _DATABASE_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include <assert.h>
 #include <string.h>
@@ -29,15 +29,15 @@ typedef struct Database
 // Creates an empty database on heap and returns pointer to it
 Database *createDatabase();
 
+// Grows the capacity according to GROWTH_FACTOR
+void expandCapacity(Database *const);
+
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);
 
 // Search database for a dragon by name or ID
 // Returns its array index or -1 if not found
 int searchForDragon(const Database *const, const char *);
-
-// Returns whether or not the string entered by user is an integer or name
-bool isID(const char *const);
 
 // Gather min and max values for fierceness, #volant and #non-volant
 void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t *const, size_t *const);
@@ -52,9 +52,6 @@ int idToIndex(const Database *const, const unsigned int *const);
 bool deleteDragon(Database *const, const unsigned int *const);
 
 // Sort the database in ascending order, bool = true by name, bool = false by id
-void sortDragons(Database *const, bool);
-
-// Swaps two dragons
-void swapDragons(Dragon *, Dragon *);
+void sortDragons(Database *const, const bool);
 
 #endif

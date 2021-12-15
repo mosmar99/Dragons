@@ -1,5 +1,14 @@
 #include "database.h"
 
+// Swaps two dragons
+static void swapDragons(Dragon *const, Dragon *const);
+
+// Copy a dragon to another
+static void copyDragon(Dragon *const, const Dragon *const);
+
+// Returns whether or not the string entered by user is an integer or name
+static bool isID(const char *const);
+
 Database *createDatabase()
 {
     Database *db = malloc(sizeof(Database));
@@ -20,6 +29,37 @@ Database *createDatabase()
     }
 
     return db;
+}
+
+void expandCapacity(Database *const db)
+{
+    Dragon *newDragonArray = calloc(GROWTH_FACTOR * db->capacity, sizeof(Dragon));
+    if (!newDragonArray)
+    {
+        puts("Error: failed to allocate memory for expanded dragon array.");
+        getchar();
+        exit(-1);
+    }
+    
+
+    // copy all dragons and free the old dragons
+    for (size_t dragonIx = 0; dragonIx < db->capacity; dragonIx++)
+    {
+        copyDragon(&newDragonArray[dragonIx], &db->dragons[dragonIx]);
+
+        // free dragon in old array
+        free(db->dragons[dragonIx].name);
+        db->dragons[dragonIx].name = NULL;
+        for (size_t i = 0; i < MAX_COLOURS; i++)
+        {
+            free(db->dragons->colours[i]);
+            db->dragons->colours[i] = NULL;
+        }
+    }
+    free(db->dragons);
+    
+    db->dragons = newDragonArray;
+    db->capacity = GROWTH_FACTOR * db->capacity;
 }
 
 void destroyDatabase(Database *db)
@@ -186,7 +226,7 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
     return isDragonLast;
 }
 
-void sortDragons(Database *db, bool sortByName)
+void sortDragons(Database *db, const bool sortByName)
 {
     // Bubblesort
     for (size_t i = 0; i < db->size - 1; i++)
@@ -211,14 +251,65 @@ void sortDragons(Database *db, bool sortByName)
     }
 }
 
-void swapDragons(Dragon *d1, Dragon *d2)
+void swapDragons(Dragon *const d1, Dragon *const d2)
 {
-    
+    // set up a temporary dragon
+    Dragon *temp = malloc(sizeof(Dragon));
+    if (!temp)
+    {
+        puts("Error: failed to allocate memory for dragon");
+        getchar();
+        exit(-1);
+    }
+
+    temp->name = calloc(MAX_NAME, sizeof(char));
+    if (!temp->name)
+    {
+        puts("Error: failed to allocate memory for dragon name.");
+        getchar();
+        exit(-1);
+    }
+    for (size_t i = 0; i < MAX_COLOURS; i++)
+    {
+        temp->colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
+        if (!temp->colours[i])
+        {
+            puts("Error: failed to allocate memory for dragon colour");
+            getchar();
+            exit(-1);
+        }
+    }
+
+    // do the swap
+    copyDragon(temp, d1);
+    copyDragon(d1, d2);
+    copyDragon(d2, temp);
+
+    // clean up the temporary dragon
+    free(temp->name);
+    temp->name = NULL;
+    for (size_t i = 0; i < MAX_COLOURS; i++)
+    {
+        free(temp->colours[i]);
+        temp->colours[i] = NULL;
+    }
+    free(temp);
+    temp = NULL;
 }
 
-void copyDragon(Dragon *dest, Dragon *src)
+void copyDragon(Dragon *const dest, const Dragon *const src)
 {
     // copy name
+    if (!dest->name)
+    { // allocate memory if needed
+        dest->name = calloc(MAX_NAME, sizeof(char));
+        if (!dest->name)
+        {
+            puts("Error: failed to allocate memory for dragon name.");
+            getchar();
+            exit(-1);
+        }
+    }
     strcpy(dest->name, src->name);
 
     // copy id
@@ -244,6 +335,7 @@ void copyDragon(Dragon *dest, Dragon *src)
             if (!dest->colours[colourIx])
             {
                 puts("Error: failed to allocate memory for a dragon's colour.");
+                getchar();
                 exit(-1);
             }
         }
@@ -254,7 +346,7 @@ void copyDragon(Dragon *dest, Dragon *src)
     // delete any extra colours left behind by the now copied-over dragon
     for (; colourIx < MAX_COLOURS; colourIx++)
     {
-        free(dest->colours[colourIx]);
+        free(*(dest->colours + colourIx));
         dest->colours[colourIx] = NULL;
     }
 }

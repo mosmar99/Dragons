@@ -27,6 +27,9 @@ void listAllDragonsDetailed(const Database *db);
 // display detailed information about ONE dragon within the database based on Name or Id
 // ID, Name, Volant, #Colours, Colors
 void listOneDragonDetailed(const Database *db);
- 
-#endif
 
+// display detailed information about ONE dragon within the database based on Name or Id
+// ID, Name, Volant, #Colours, Colors
+void listOneDragonDetailed(const Database *db);
+
+#endif
