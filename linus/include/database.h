@@ -37,7 +37,7 @@ void destroyDatabase(Database *);
 
 // Search database for a dragon by name or ID
 // Returns its array index or -1 if not found
-int searchForDragon(const Database *const, const char *);
+int searchForDragon(const Database *const, const char *const);
 
 // Gather min and max values for fierceness, #volant and #non-volant
 void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t *const, size_t *const);

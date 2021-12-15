@@ -6,37 +6,37 @@
 #include <stdlib.h>
 
 // Prints a list of all dragons (brief)
-static void listAllDragonsBrief(const Database *const);
+static void listAllDragonsBrief(const Database *const db);
 
 // Prints a list of all dragons (detailed)
-static void listAllDragonsDetailed(const Database *const);
+static void listAllDragonsDetailed(const Database *const db);
 
 // Get an ID or name of dragon from user
-static void getDragonNameOrId(char *const);
+static void getDragonNameOrId(char *const str);
 
 // Prints one dragon
-static void printOneDragon(const Database *const);
+static void printOneDragon(const Database *const db);
 
 // Prints statistics of the database
-static void printDatabaseInfo(const Database *const);
+static void printDatabaseInfo(const Database *const db);
 
 // Handles updating a dragon
-static void doUpdateDragon(Database *const);
+static void doUpdateDragon(Database *const db);
 
 // Handles inserting a new dragon
-static void doInsertDragon(Database *const);
+static void doInsertDragon(Database *const db);
 
 // Handles deleting a dragon
-static void doDeleteDragon(Database *const);
+static void doDeleteDragon(Database *const db);
 
 // Handles sorting the database
-static void doSortDragons(Database *const);
+static void doSortDragons(Database *const db);
 
 // Update a dragon's attributes, excl. name and id
-static void updateDragon(Dragon *const);
+static void updateDragon(Dragon *const db);
 
 // Converts a string to all uppercase
-static void stringToUppercase(char *const);
+static void stringToUppercase(char *const str);
 
 void printWelcomeMessage()
 {
@@ -123,7 +123,7 @@ void getDatabaseFilename(char *const filename)
 void listAllDragonsBrief(const Database *const db)
 {
     puts("");
-    const size_t idWidth = 4;
+    const size_t idWidth = 5;
     puts("--------------------------------------------------------------------------------");
     printf("%*s  %s\n", idWidth, "ID", "Name");
     puts("--------------------------------------------------------------------------------");
@@ -173,7 +173,7 @@ void listAllDragonsDetailed(const Database *const db)
         // print all colours
         for (size_t i = 0; i < db->dragons[dragonIndex].numColours; i++)
         {
-            printf("%s ", db->dragons[dragonIndex].colours[i]);
+            printf("%s ", *(db->dragons[dragonIndex].colours + i));
         }
 
         puts("");
@@ -226,7 +226,7 @@ void printOneDragon(const Database *const db)
     // print all colours
     for (size_t i = 0; i < db->dragons[ix].numColours; i++)
     {
-        printf("%s ", db->dragons[ix].colours[i]);
+        printf("%s ", *(db->dragons[ix].colours + i));
     }
 
     puts("");
@@ -428,8 +428,8 @@ void updateDragon(Dragon *const dragon)
             // free the remaining colours
             for (size_t j = i; j < MAX_COLOURS && j < originalColours; j++)
             {
-                free(dragon->colours[j]);
-                dragon->colours[j] = NULL;
+                free(*(dragon->colours + j));
+                *(dragon->colours + j) = NULL;
             }
             dragon->numColours = newColours;
             return;
@@ -438,15 +438,15 @@ void updateDragon(Dragon *const dragon)
         newColours++;
         if (newColours > originalColours)
         {
-            dragon->colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
-            if (!dragon->colours[i])
+            *(dragon->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!*(dragon->colours + i))
             {
                 puts("Error: failed to allocate memory for a dragon's colour");
                 getchar();
                 exit(-1);
             }
         }
-        strcpy(dragon->colours[i], colour);
+        strcpy(*(dragon->colours + i), colour);
     }
     dragon->numColours = newColours;
 }

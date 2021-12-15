@@ -56,8 +56,8 @@ void loadDatabase(const char *const filename, Database *const db)
         // all the colours
         for (size_t i = 0; i < db->dragons[dragonIndex].numColours && i < MAX_COLOURS && !feof(filePtr); i++)
         {
-            db->dragons[dragonIndex].colours[i] = calloc(MAX_COLOUR_NAME, sizeof(char));
-            if (!db->dragons[dragonIndex].colours[i])
+            *(db->dragons[dragonIndex].colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
+            if (!*(db->dragons[dragonIndex].colours + i))
             {
                 puts("Error: failed to allocate memory for a dragon's colour.");
                 getchar();
