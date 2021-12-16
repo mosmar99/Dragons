@@ -32,4 +32,20 @@ void listOneDragonDetailed(const Database *db);
 // ID, Name, Volant, #Colours, Colors
 void listOneDragonDetailed(const Database *db);
 
+static bool getIsValidID(char str[], bool isStrValidId);
+
+static bool getIsValidNAME(bool isStrValidId, char str[], bool isStrValidName);
+
+static bool getIfIdInDB(const bool isStrValidId, bool isIdInDB, const char str[], const Database *db);
+
+static bool getIfNameInDB(bool isStrValidName, const Database *db, char str[], bool isNameInDB);
+
+static void printSpecificDragon(char str[], bool isIdInDB, bool isNameInDB, const Database *db);
+
+void listDatabaseStatistics(const Database *db);
+
+static void getMinFierceness(const Database *db, unsigned int* minFierceness);
+
+static void getMaxFierceness(const Database *db, unsigned int* maxFierceness);
+
 #endif
