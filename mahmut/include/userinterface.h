@@ -29,7 +29,7 @@ static void listOneDragonDetailed(const Database *db);
 
 static bool getIsValidID(char str[], bool isStrValidId);
 
-static bool getIsValidNAME(bool isStrValidId, char str[], bool isStrValidName);
+static bool getIsValidNAME(char str[], bool isStrValidName);
 
 bool getIfIdInDB(const Database *db, const bool isStrValidId, const char str[], bool isIdInDB);
 
@@ -41,6 +41,8 @@ static unsigned short findDragonIndex(char str[], bool isIdInDB, bool isNameInDB
 
 static void getDragonIdOrName(char *const str);
 
+static void toUpper(char* string);
+
 static void listDatabaseStatistics(const Database *db);
 
 static void getMinFierceness(const Database *db, unsigned int* minFierceness);
@@ -49,6 +51,10 @@ static void getMaxFierceness(const Database *db, unsigned int* maxFierceness);
 
 void updateOneDragon(Database *db);
 
-static void changeDragonVolant(char *volant);
+static bool changeDragonVolant(char *volant);
+
+static bool changeDragonFierceness(unsigned int *fierceness);
+
+static void changeDragonColours(Dragon *dragon);
 
 #endif

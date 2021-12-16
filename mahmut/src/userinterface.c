@@ -121,23 +121,20 @@ static bool getIsValidID(char str[], bool isStrValidId){
     return isStrValidId;
 }
 
-static bool getIsValidNAME(bool isStrValidId, char str[], bool isStrValidName) {
-    if(isStrValidId == false) {
+static bool getIsValidNAME(char str[], bool isStrValidName) {
         /* Ensure that input is a valid char (drgIdx.e. a-zA-Z) using ASCII table*/
+        for (size_t i = 0; ; i++) {
 
-        for (size_t drgIdx = 0; ; drgIdx++) {
-
-            if(str[drgIdx] == 0) {
+            if(str[i] == 0) {
                 isStrValidName = true;
                 break;
             }
             
-            if(str[drgIdx] <= 65 && str[drgIdx] >= 90 || str[drgIdx] <= 97 && str[drgIdx] >= 122) {
+            if(str[i] <= 65 && str[i] >= 90 || str[i] <= 97 && str[i] >= 122) {
                 isStrValidName = false;
                 break;
             }
         }
-    } 
     return isStrValidName;
 }
 
@@ -187,12 +184,16 @@ static unsigned short findDragonIndex(char str[], bool isIdInDB, bool isNameInDB
     } // end id if
     else if(isNameInDB == true) {
         for (size_t drgIdx = 0; drgIdx < (*db).size; drgIdx++) { // grab each dragon sequentially
-            for (size_t charIdx = 0; str[charIdx] != (*db).dragons[drgIdx].name[charIdx] ; charIdx++) { // grab the first character within its name and check if it equals all chars of the input array
+            for (size_t charIdx = 0; ; charIdx++) { // grab the first character within its name and check if it equals all chars of the input array
 
                 if (str[charIdx] == 0) {
                     return drgIdx;
                 } // end if
 
+                if (str[charIdx] != (*db).dragons[drgIdx].name[charIdx])
+                {
+                    break;
+                }
             } // end inner loop
         } // end outer loop
     } // end name if
@@ -213,8 +214,17 @@ static void printSpecificDragon(const Database *db, unsigned short drgIdx) {
     puts("");
 }
 
+static void toUpper(char* string) {
+    const char OFFSET = 'a' - 'A';
+    while (*string)
+    {
+        *string = (*string >= 'a' && *string <= 'z') ? *string -= OFFSET : *string;
+        string++;
+    }
+}
+
 static void getDragonIdOrName(char *const str) {
-    printf("\nEnter id or name of dragon: ");
+    printf("Enter id or name of dragon: ");
     fflush(stdin);
     scanf("%24s", str);
 }
@@ -222,17 +232,25 @@ static void getDragonIdOrName(char *const str) {
 static void listOneDragonDetailed(const Database *db) {
     // reads input
     char str[MAX_NAME] = {0};
+    puts("");
     getDragonIdOrName(str);
 
     // check if input is a number or string a-zA-Z
     bool isStrValidId, isStrValidName, isIdInDB = 0, isNameInDB = 0; // meaning: is str valid dragon id or name
     unsigned short drgIdx; // variable to store index for the dragon we found
     isStrValidId = getIsValidID(str, isStrValidId); // check if input is an int
-    isStrValidName = getIsValidNAME(isStrValidId, str, isStrValidName); // check if input is wholly a part of english alphabet, drgIdx.e. a-zA-Z
+    isStrValidName = getIsValidNAME(str, isStrValidName); // check if input is wholly a part of english alphabet, drgIdx.e. a-zA-Z
+
+    // if we have a str with alphabet chars, then make them all into uppercase
+    if (isStrValidName) // excludes isStrValidID
+    {
+        toUpper(str);
+    }
 
     // check if input even exists in the database
     isIdInDB = getIfIdInDB(db, isStrValidId, str, isIdInDB);
     isNameInDB = getIfNameInDB(db, isStrValidName, str, isNameInDB);
+    
 
     // find the index of the dragon that we know exists in the database
     drgIdx = findDragonIndex(str, isIdInDB, isNameInDB, db);
@@ -300,21 +318,74 @@ static void listDatabaseStatistics(const Database *db){
     printf("%4u %13u %13u %7u %11u\n", (*db).size, minFierceness, maxFierceness, volant, withoutVolant);
 }
 
-static void changeDragonVolant(char *volant){
+static bool changeDragonVolant(char *volant){
+    bool isValidVolant = false;
     char newVolant;
-    printf("\nEnter volant (Y, N): ");
+    printf("Enter volant (Y, N): ");
     fflush(stdin);
     newVolant = fgetchar();
-    printf("%c", newVolant);
-    // if (errno)
-    // {
-        
-    // }
-    // else
-    // {
-    //     /* code */
-    // }
-    
+    if (newVolant == 'y' || newVolant == 'Y') {
+        *volant = 'Y';
+        isValidVolant = true;
+    } else if (newVolant == 'n' || newVolant == 'N') {
+        *volant = 'N';
+        isValidVolant = true;
+    }    
+    return isValidVolant;
+}
+
+static bool changeDragonFierceness(unsigned int *fierceness) {
+    bool isValidFierceness = false;
+    char fierceArr[3]; // only three slots, 2 for numbers (10 has two slots) and the null sign
+    printf("Enter fierceness (1-10): ");
+    fflush(stdin);
+    scanf("%2s", fierceArr);
+    unsigned short nr = strtoul(fierceArr, NULL, 10); // returns 0 if unsuccessful
+    if(nr >= 1 && nr <= 10) {
+        *fierceness = nr;
+        isValidFierceness = true;
+    }
+    return isValidFierceness;
+}
+
+static void changeDragonColours(Dragon *dragon) {
+    bool continueGetting = true;
+    // get all the colours
+    for (int currCol = 0; currCol < MAX_COLOURS; currCol++)
+    {
+        if (continueGetting == true)
+        {
+            char* colour = calloc(MAX_COLOUR_NAME, sizeof(char));
+            printf("Colour %d (of %d): ", (currCol+1), MAX_COLOURS);
+            fflush(stdin);
+            fgets(colour, 24, stdin); // reads including and until the newline character
+            if(*colour == '\n') {
+                dragon->numColours = currCol;
+                continueGetting = false;
+            }
+            int i = 0;
+            while (colour[i] != '\n') {
+                if(!isalpha(colour[i])) { // checks ascii: a-zA-Z
+                    printf("-->Err: Failed to allocate colour. Invalid colour name\n");
+                    dragon->numColours = currCol;
+                    continueGetting = false;
+                    break;
+                }
+                i++;
+            }
+            if(colour[i] == '\n') { // removes the newline character, not necessary anymore
+                colour[i] = 0;
+            }
+            toUpper(colour);
+            free(dragon->colours[currCol]);
+            dragon->colours[currCol] = colour;
+        } 
+        if (continueGetting == false)
+        {
+            free(dragon->colours[currCol]);
+            dragon->colours[currCol] = NULL;
+        }
+    }
 }
 
 void updateOneDragon(Database *db) {
@@ -324,17 +395,47 @@ void updateOneDragon(Database *db) {
     // check if valid format on input
     bool isStrValidId, isStrValidName, isIdInDB = 0, isNameInDB = 0; // meaning: is str valid dragon id or name
     isStrValidId   = getIsValidID(str, isStrValidId); // check if input is an int
-    isStrValidName = getIsValidNAME(isStrValidId, str, isStrValidName); // check if input is wholly a part of english alphabet, drgIdx.e. a-zA-Z
+    isStrValidName = getIsValidNAME(str, isStrValidName); // check if input is wholly a part of english alphabet, drgIdx.e. a-zA-Z
 
-    // check if input is in database
-    isIdInDB       = getIfIdInDB(db, isStrValidId, str, isIdInDB);
-    isNameInDB     = getIfNameInDB(db, isStrValidName, str, isNameInDB);
+    if (isStrValidName) // excludes isStrValidID
+    {
+        toUpper(str);
+    }
 
-    // find the index of the dragon that we know exists in the database
-    unsigned short drgIdx; // variable to store index for the dragon we found
-    drgIdx = findDragonIndex(str, isIdInDB, isNameInDB, db);
+    if(isStrValidId || isStrValidName) {
+        // if we have a str with alphabet chars, then make them all into uppercase
 
-    // update dragon with "str" name or id found within database with new values on volant, fierceness and colours
-    // first update the volant
-    changeDragonVolant(&(*db).dragons[drgIdx].isVolant);
+        // check if input is in database
+        isIdInDB       = getIfIdInDB(db, isStrValidId, str, isIdInDB);
+        isNameInDB     = getIfNameInDB(db, isStrValidName, str, isNameInDB);
+
+        if(isIdInDB || isNameInDB) {
+            // find the index of the dragon that we know exists in the database
+            unsigned short drgIdx; // variable to store index for the dragon we found
+            drgIdx = findDragonIndex(str, isIdInDB, isNameInDB, db);
+
+            // update dragon with "str" name or id found within database with new values on volant, fierceness and colours
+            // first update the volant
+            bool isValidVolant = changeDragonVolant(&(*db).dragons[drgIdx].isVolant);
+            if (isValidVolant == true)
+            {
+                bool isValidFierceness = changeDragonFierceness(&(*db).dragons[drgIdx].fierceness);
+                if (isValidFierceness == true)
+                {
+                    changeDragonColours(&(*db).dragons[drgIdx]);
+                    saveDatabase("mahmut/files/Dragons.txt", db);
+                    loadDatabase("mahmut/files/Dragons.txt", db);
+                    puts("Dragon updated."); 
+                } else {
+                    printf("--->Err: Given fierceness is out of bound (1-10)\n");
+                }
+                
+            } else {
+                printf("--->Err: Given Volant is invalid (Y, N)\n");
+            }
+                
+        } else {
+            printf("--->Err: Given ID or NAME is not in the database\n");
+        }
+    }
 }

@@ -63,7 +63,7 @@ void saveDatabase(char *filename, Database *db)
 {
     FILE *drgFilePtr;
     if ((drgFilePtr = fopen(filename, "w")) == NULL)
-        puts("Err: File could not be opened"), exit(-1);
+        perror("-->Err"), exit(-1);
 
     // write dragonCount
     fprintf(drgFilePtr, "%u\n", (*db).size);

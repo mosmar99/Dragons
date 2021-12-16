@@ -415,7 +415,7 @@ void updateDragon(Dragon *const dragon)
     for (size_t i = 0; i < MAX_COLOURS; i++)
     {
         char colour[MAX_COLOUR_NAME - 1];
-        printf("Colour %llu (of %llu) (0 to stop): ", i + 1, MAX_COLOURS);
+        printf("Colour (%llu of %llu) (0 to stop): ", i + 1, MAX_COLOURS);
         fflush(stdin);
         scanf("%24s", colour);
         for (char *ix = colour; *ix != '\0'; ix++)
