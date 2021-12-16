@@ -35,7 +35,9 @@ bool getIfIdInDB(const Database *db, const bool isStrValidId, const char str[], 
 
 bool getIfNameInDB(const Database *db, const bool isStrValidName, const char str[], bool isNameInDB);
 
-static void printSpecificDragon(char str[], bool isIdInDB, bool isNameInDB, const Database *db);
+static void printSpecificDragon(const Database *db, unsigned short drgIdx);
+
+static unsigned short findDragonIndex(char str[], bool isIdInDB, bool isNameInDB, const Database *db);
 
 static void getDragonIdOrName(char *const str);
 
@@ -46,5 +48,7 @@ static void getMinFierceness(const Database *db, unsigned int* minFierceness);
 static void getMaxFierceness(const Database *db, unsigned int* maxFierceness);
 
 void updateOneDragon(Database *db);
+
+static void changeDragonVolant(char *volant);
 
 #endif

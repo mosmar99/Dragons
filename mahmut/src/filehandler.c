@@ -47,7 +47,6 @@ void loadDatabase(char *filename, Database *db)
             if (!(*db).dragons[drgIdx].colours[currCol])
                 puts("Err: Failed to allocate memory forc dragon color"), exit(-1);
             fscanf(drgFilePtr, "%24s", (*db).dragons[drgIdx].colours[currCol]);
-            printf("\n%s\n", (*db).dragons[drgIdx].colours[currCol]);
         }
     } // end dragon loop
 
