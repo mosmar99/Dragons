@@ -1,8 +1,12 @@
 #ifndef _DATABASE_H
 #define _DATABASE_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <assert.h>
+#include <string.h>
 #include "dragon.h"
 
 // The initial capacity of the database

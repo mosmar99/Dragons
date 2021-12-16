@@ -13,15 +13,15 @@ mahmut/files/Dragons.txt
 
 int main()
 {
-    char filename[MAX_FILENAME - 1];
+    //char filename[MAX_FILENAME - 1];
     Database *database = createDatabase();
-    getDatabaseFilename(filename);
-    loadDatabase(filename, database);
+    //getDatabaseFilename(filename);
+    loadDatabase("mahmut/files/Dragons.txt", database);
     printWelcomeMessage();
     puts("");
     printMenu();
     executeCommands(database);
-    saveDatabase(filename, database);
+    saveDatabase("mahmut/files/Dragons.txt", database);
     destroyDatabase(database);
 
     return 0;

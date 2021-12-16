@@ -1,6 +1,8 @@
 #ifndef _DRAGON_H
 #define _DRAGON_H
 
+#include <stdlib.h>
+
 // The maximum number of colours any dragon can have
 #define MAX_COLOURS 5
 

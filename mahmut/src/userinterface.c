@@ -1,5 +1,9 @@
 #include "userinterface.h"
-#include "database.h"
+#include "filehandler.h"
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
  
 void printWelcomeMessage(void) {
     printf("This program helps organize information about dragons. You may add and\n");
@@ -14,7 +18,7 @@ void printMenu(void){
     puts("---------------------------------------------------------------");
     puts("0. Display menu.");
     puts("1. Insert a dragon.");
-    puts("2. Update a drago.");
+    puts("2. Update a dragon.");
     puts("3. Delete a dragon.");
     puts("4. List all dragons (brief).");
     puts("5. List all dragons (detailed).");
@@ -43,7 +47,7 @@ void executeCommands(Database *db)
  
             break;
         case 2:
- 
+            updateOneDragon(db);
             break;
         case 3:
  
@@ -74,7 +78,7 @@ void executeCommands(Database *db)
     }
 }
  
-void listAllDragonsBrief(const Database *db) {
+static void listAllDragonsBrief(const Database *db) {
     // print each dragons name and id (from the database)
     printf("---------------------------------------------------------------\n");
     printf("ID Name\n");
@@ -84,7 +88,7 @@ void listAllDragonsBrief(const Database *db) {
     }
 }
  
-void listAllDragonsDetailed(const Database *db) {
+static void listAllDragonsDetailed(const Database *db) {
     // print each dragons name and id (from the database)
     printf("---------------------------------------------------------------\n");
     printf("ID Name\t\tVolant Fierceness #Colours Colors\n");
@@ -136,7 +140,7 @@ static bool getIsValidNAME(bool isStrValidId, char str[], bool isStrValidName) {
     return isStrValidName;
 }
 
-static bool getIfIdInDB(const bool isStrValidId, bool isIdInDB, const char str[], const Database *db) {
+bool getIfIdInDB(const Database *db, const bool isStrValidId, const char str[], bool isIdInDB) {
     // check if the string ID exists in the database
     if(isStrValidId == true) { // putting equals true for readablility
         unsigned int nR = strtoul(str, NULL, 10);
@@ -149,7 +153,7 @@ static bool getIfIdInDB(const bool isStrValidId, bool isIdInDB, const char str[]
     return isIdInDB;   
 }
 
-static bool getIfNameInDB(bool isStrValidName, const Database *db, char str[], bool isNameInDB){
+bool getIfNameInDB(const Database *db, const bool isStrValidName, const char str[], bool isNameInDB) {
     // check if the string NAME exists in database
     if(isStrValidName == true) { // putting equals true for readablility
         for (size_t drgIdx = 0; drgIdx < (*db).size; drgIdx++) {
@@ -176,7 +180,7 @@ static bool getIfNameInDB(bool isStrValidName, const Database *db, char str[], b
 }
 
 static void printSpecificDragon(char str[], bool isIdInDB, bool isNameInDB, const Database *db) {
-    unsigned int id = strtoul(str, NULL, 10)-1;
+    unsigned int id = strtoul(str, NULL, 10) - 1;
     bool foundDragonName = false;
     if (isIdInDB == true) {
         printf("\n---------------------------------------------------------------\n");
@@ -217,19 +221,23 @@ static void printSpecificDragon(char str[], bool isIdInDB, bool isNameInDB, cons
     }
 }
 
-void listOneDragonDetailed(const Database *db) {
+static void getDragonIdOrName(char *const str) {
+    printf("\nEnter id or name of dragon: ");
+    fflush(stdin);
+    scanf("%24s", str);
+}
+
+static void listOneDragonDetailed(const Database *db) {
     // reads input
     char str[MAX_NAME] = {0};
     bool isStrValidId, isStrValidName; // meaning: is str valid dragon id or name
     bool isIdInDB = 0, isNameInDB = 0;
-    printf("\nEnter id or name of dragon: ");
-    fflush(stdin);
-    scanf("%49s", str);
+    getDragonIdOrName(str);
 
     isStrValidId = getIsValidID(str, isStrValidId); // check if input is an int
     isStrValidName = getIsValidNAME(isStrValidId, str, isStrValidName); // check if input is wholly a part of english alphabet, drgIdx.e. a-zA-Z
-    isIdInDB = getIfIdInDB(isStrValidId, isIdInDB, str, db);
-    isNameInDB = getIfNameInDB(isStrValidName, db, str, isNameInDB);
+    isIdInDB = getIfIdInDB(db, isStrValidId, str, isIdInDB);
+    isNameInDB = getIfNameInDB(db, isStrValidName, str, isNameInDB);
     printSpecificDragon(str, isIdInDB, isNameInDB, db);
 }
 
@@ -277,7 +285,7 @@ static void getWithoutVolantCount(const Database *db,  unsigned int* withoutVola
     }
 }
 
-void listDatabaseStatistics(const Database *db){
+static void listDatabaseStatistics(const Database *db){
     printf("\n---------------------------------------------------------------\n");
     printf("Size MinFierceness MaxFierceness #Volant #Nonvolant\n");
     printf("---------------------------------------------------------------\n");
@@ -287,4 +295,8 @@ void listDatabaseStatistics(const Database *db){
     getVolantCount(db, &volant);
     getWithoutVolantCount(db, &withoutVolant);
     printf("%4u %13u %13u %7u %11u\n", (*db).size, minFierceness, maxFierceness, volant, withoutVolant);
+}
+
+void updateOneDragon(Database *db) {
+
 }

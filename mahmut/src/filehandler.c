@@ -1,5 +1,7 @@
 #include "filehandler.h"
-#include "database.h"
+#include <assert.h>
+#include <stdbool.h>
+#include <string.h>
 
 void loadDatabase(char *filename, Database *db)
 {

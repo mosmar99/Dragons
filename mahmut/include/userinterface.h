@@ -1,11 +1,6 @@
 #ifndef _USERINTERFACE_H
 #define _USERINTERFACE_H
  
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include "stdbool.h"
 #include "database.h"
  
 // Prints welcome message
@@ -18,34 +13,38 @@ void printMenu(void);
 void executeCommands(Database *database);
  
 // display brief (i.e: Name and ID) information about all dragons within the database
-void listAllDragonsBrief(const Database *db);
+static void listAllDragonsBrief(const Database *db);
  
 // display detailed information about all dragons within the database
 // ID, Name, Volant, #Colours, Colors
-void listAllDragonsDetailed(const Database *db);
+static void listAllDragonsDetailed(const Database *db);
  
 // display detailed information about ONE dragon within the database based on Name or Id
 // ID, Name, Volant, #Colours, Colors
-void listOneDragonDetailed(const Database *db);
+static void listOneDragonDetailed(const Database *db);
 
 // display detailed information about ONE dragon within the database based on Name or Id
 // ID, Name, Volant, #Colours, Colors
-void listOneDragonDetailed(const Database *db);
+static void listOneDragonDetailed(const Database *db);
 
 static bool getIsValidID(char str[], bool isStrValidId);
 
 static bool getIsValidNAME(bool isStrValidId, char str[], bool isStrValidName);
 
-static bool getIfIdInDB(const bool isStrValidId, bool isIdInDB, const char str[], const Database *db);
+bool getIfIdInDB(const Database *db, const bool isStrValidId, const char str[], bool isIdInDB);
 
-static bool getIfNameInDB(bool isStrValidName, const Database *db, char str[], bool isNameInDB);
+bool getIfNameInDB(const Database *db, const bool isStrValidName, const char str[], bool isNameInDB);
 
 static void printSpecificDragon(char str[], bool isIdInDB, bool isNameInDB, const Database *db);
 
-void listDatabaseStatistics(const Database *db);
+static void getDragonIdOrName(char *const str);
+
+static void listDatabaseStatistics(const Database *db);
 
 static void getMinFierceness(const Database *db, unsigned int* minFierceness);
 
 static void getMaxFierceness(const Database *db, unsigned int* maxFierceness);
+
+void updateOneDragon(Database *db);
 
 #endif
