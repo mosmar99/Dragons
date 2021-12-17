@@ -450,3 +450,11 @@ void updateDragon(Dragon *const dragon)
     }
     dragon->numColours = newColours;
 }
+
+static void stringToUppercase(char *const str)
+{
+    for (char *ix = str; *ix != '\0'; ix++)
+    {
+        *ix = toupper(*ix);
+    }
+}
