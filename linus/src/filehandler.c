@@ -16,7 +16,7 @@ void loadDatabase(const char *const filename, Database *const db)
     FILE *filePtr = fopen(filenameToUse, "r");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.\n", filenameToUse);
+        fprintf(stderr, "Error: failed to open %s.\n", filenameToUse);
         getchar();
         exit(-1);
     }
@@ -35,7 +35,7 @@ void loadDatabase(const char *const filename, Database *const db)
         db->dragons[dragonIndex].name = calloc(MAX_NAME, sizeof(char));
         if (!db->dragons[dragonIndex].name)
         {
-            puts("Error: failed to allocate memory for a dragon's name.");
+            fprintf(stderr, "Error: failed to allocate memory for a dragon's name.\n");
             getchar();
             exit(-1);
         }
@@ -59,7 +59,7 @@ void loadDatabase(const char *const filename, Database *const db)
             *(db->dragons[dragonIndex].colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(db->dragons[dragonIndex].colours + i))
             {
-                puts("Error: failed to allocate memory for a dragon's colour.");
+                fprintf(stderr, "Error: failed to allocate memory for a dragon's colour.\n");
                 getchar();
                 exit(-1);
             }
@@ -71,7 +71,7 @@ void loadDatabase(const char *const filename, Database *const db)
     // last thing to read in txt file is the next available id
     if (feof(filePtr))
     {
-        puts("Error: nextId in database does not exist.");
+        fprintf(stderr, "Error: nextId in database does not exist.\n");
         getchar();
         exit(-1);
     }
@@ -94,7 +94,7 @@ void saveDatabase(const char *const filename, const Database *const db)
     FILE *filePtr = fopen(filenameToUse, "w");
     if (!filePtr)
     {
-        printf("Error: failed to open %s.\n", filenameToUse);
+        fprintf(stderr,"Error: failed to open %s.\n", filenameToUse);
         getchar();
         exit(-1);
     }

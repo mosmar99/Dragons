@@ -8,7 +8,7 @@ Database *createDatabase()
     Database *db = malloc(sizeof(Database));
     if (db == NULL)
     {
-        puts("Error: failed to allocate memory for database.");
+        fprintf(stderr,"Error: failed to allocate memory for database.\n");
         return NULL;
     }
 
@@ -18,7 +18,7 @@ Database *createDatabase()
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
     if (db->dragons == NULL)
     {
-        puts("Error: failed to allocate memory for dragon array.");
+        fprintf(stderr,"Error: failed to allocate memory for dragon array.\n");
         return NULL;
     }
 
@@ -30,7 +30,7 @@ void expandCapacity(Database *const db)
     Dragon *newDragonArray = calloc(GROWTH_FACTOR * db->capacity, sizeof(Dragon));
     if (!newDragonArray)
     {
-        puts("Error: failed to allocate memory for expanded dragon array.");
+        fprintf(stderr,"Error: failed to allocate memory for expanded dragon array.\n");
         getchar();
         exit(-1);
     }
@@ -86,8 +86,8 @@ int searchForDragon(const Database *const db, const char *const identifier)
         id = strtol(identifier, &endPtr, 0);
         if (id < 1 || idToIndex(db, &id) >= db->size)
         {
-            printf("Error: non-valid ID: %d\n", id);
-            puts("Error: dragon not found");
+            fprintf(stderr,"Error: non-valid ID: %d\n", id);
+            fprintf(stderr,"Error: dragon not found\n");
             return -1;
         }
     }
@@ -129,7 +129,7 @@ void getDatabaseInfo(const Database *const db, size_t *const max, size_t *const 
 {
     if (db->size == 0)
     {
-        puts("No dragons in database.");
+        fprintf(stderr,"No dragons in database.\n");
         return;
     }
 

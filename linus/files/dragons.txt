@@ -1,4 +1,11 @@
 5
+1
+SMAUG
+Y
+8
+2
+RED
+GOLD
 2
 NORBERT
 N
@@ -26,11 +33,4 @@ Y
 9
 1
 BLACK
-1
-SMAUG
-Y
-8
-2
-RED
-GOLD
 6

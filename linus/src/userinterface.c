@@ -301,7 +301,7 @@ void doInsertDragon(Database *const db)
     db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
     if (!&db->dragons[db->size])
     {
-        puts("Error: failed to allocate memory for new dragon");
+        fprintf(stderr,"Error: failed to allocate memory for new dragon\n");
         getchar();
         exit(-1);
     }
@@ -315,7 +315,8 @@ void doInsertDragon(Database *const db)
     db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
     if (!db->dragons[ix].name)
     {
-        puts("Error: failed to allocate memory for new dragon's name");
+        
+        fprintf(stderr,"Error: failed to allocate memory for new dragon's name\n");
         getchar();
         exit(-1);
     }
@@ -384,8 +385,8 @@ void updateDragon(Dragon *const dragon)
     volantTest = toupper(volantTest);
     if (volantTest != 'Y' && volantTest != 'N')
     {
-        puts("Error: invalid volant input");
-        puts("Default: N");
+        fprintf(stderr,"Error: invalid volant input");
+        fprintf(stderr,"Default: N\n");
         dragon->isVolant = 'N';
     }
     else
@@ -400,8 +401,8 @@ void updateDragon(Dragon *const dragon)
     scanf("%2d[0123456789]", &fierceTest);
     if (fierceTest < 1 || fierceTest > 10)
     {
-        puts("Error: invalid range");
-        puts("Default: 1");
+        fprintf(stderr,"Error: invalid range\n");
+        fprintf(stderr,"Default: 1\n");
         dragon->fierceness = 1;
     }
     else
@@ -441,7 +442,7 @@ void updateDragon(Dragon *const dragon)
             *(dragon->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(dragon->colours + i))
             {
-                puts("Error: failed to allocate memory for a dragon's colour");
+                fprintf(stderr,"Error: failed to allocate memory for a dragon's colour\n");
                 getchar();
                 exit(-1);
             }
@@ -449,4 +450,11 @@ void updateDragon(Dragon *const dragon)
         strcpy(*(dragon->colours + i), colour);
     }
     dragon->numColours = newColours;
+}
+
+static void stringToUppercase(char *const str) {
+    for (char *ix = str; *ix != '\0'; ix++) 
+    {
+        *ix = toupper(*ix);
+    }
 }

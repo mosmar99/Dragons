@@ -9,7 +9,7 @@ void swapDragons(Dragon *const d1, Dragon *const d2)
     Dragon *temp = calloc(1, sizeof(Dragon));
     if (!temp)
     {
-        puts("Error: failed to allocate memory for dragon");
+        fprintf(stderr, "Error: failed to allocate memory for dragon\n");
         getchar();
         exit(-1);
     }
@@ -35,7 +35,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
         dest->name = calloc(MAX_NAME, sizeof(char));
         if (!dest->name)
         {
-            puts("Error: failed to allocate memory for dragon name.");
+            fprintf(stderr, "Error: failed to allocate memory for dragon name.\n");
             getchar();
             exit(-1);
         }
@@ -64,7 +64,8 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
             *(dest->colours + colourIx) = calloc(MAX_COLOURS, sizeof(char));
             if (!*(dest->colours + colourIx))
             {
-                puts("Error: failed to allocate memory for a dragon's colour.");
+                
+                fprintf(stderr, "Error: failed to allocate memory for a dragon's colour.\n");
                 getchar();
                 exit(-1);
             }
