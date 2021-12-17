@@ -22,4 +22,10 @@ typedef struct Dragon
     char *colours[MAX_COLOURS]; // which colours
 } Dragon;
 
+// Free all colours of a dragon within the given indexes
+void freeColours(Dragon *dragon, size_t lower, const size_t higher);
+
+// Copy a dragon to another
+void copyDragon(Dragon *const dest, const Dragon *const src);
+
 #endif

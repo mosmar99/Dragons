@@ -22,6 +22,36 @@ Database *createDatabase()
     return db;
 }
 
+void expandCapacity(Database *const db)
+{
+    Dragon *newDragonArray = calloc(GROWTH_FACTOR * db->capacity, sizeof(Dragon));
+    if (!newDragonArray)
+    {
+        puts("Error: failed to allocate memory for expanded dragon array.");
+        getchar();
+        exit(-1);
+    }
+
+    // copy all dragons and free the old dragons
+    for (size_t dragonIx = 0; dragonIx < db->capacity; dragonIx++)
+    {
+        copyDragon(&newDragonArray[dragonIx], &db->dragons[dragonIx]);
+
+        // free dragon in old array
+        free(db->dragons[dragonIx].name);
+        db->dragons[dragonIx].name = NULL;
+        for (size_t i = 0; i < MAX_COLOURS; i++)
+        {
+            free(*(db->dragons[dragonIx].colours + i));
+            *(db->dragons[dragonIx].colours + i) = NULL;
+        }
+    }
+    free(db->dragons);
+
+    db->dragons = newDragonArray;
+    db->capacity = GROWTH_FACTOR * db->capacity;
+}
+
 void getDatabaseFilename(char *filename)
 {
     printf("Enter the name of the database: ");

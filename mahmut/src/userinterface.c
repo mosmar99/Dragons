@@ -45,7 +45,7 @@ void executeCommands(Database *db)
             printMenu();
             break;
         case 1:
- 
+            doInsertOneDragon(db);
             break;
         case 2:
             updateOneDragon(db);
@@ -438,4 +438,78 @@ void updateOneDragon(Database *db) {
             printf("--->Err: Given ID or NAME is not in the database\n");
         }
     }
+}
+
+void doInsertOneDragon(Database *db) {
+    
+    // check if it's needed to expand database capacity
+    if (db->size == db->capacity)
+    {
+        expandCapacity(db);
+        saveDatabase(NULL, db);
+        loadDatabase(NULL, db);
+    }
+
+    // expand how many dragons
+    db->size = db->nextId;
+    db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
+    if (!&db->dragons[db->size])
+    {
+        puts("-->Err: failed to allocate memory for new dragon");
+        getchar();
+        exit(-1);
+    }
+
+    // id
+    db->dragons[db->size].id = db->nextId;
+
+    // gets name of new dragon
+    bool isValidName = true; // assume input name is true, do tests, they will set to false if needed
+    char *newName = calloc(MAX_NAME, sizeof(char));
+    printf("Enter name: ");
+    fflush(stdin);
+    fgets(newName, MAX_NAME-1, stdin); 
+
+    // checks that name is a string, ascii: a-zA-Z
+    int i = 0;
+    while (newName[i] != '\n') {
+        if( !(newName[i] >= 65 && newName[i] <= 90) && !(newName[i] >= 97 && newName[i] <= 122)) { 
+            printf("-->Err: Invalid name, valid characters are a-z and A-Z\n");
+            isValidName = false;
+            break;
+        }
+        i++;
+    }
+
+    // we needed the newline to for termination, no need anymore, can delete it
+    if (isValidName == true)
+    {
+        if(newName[i] == '\n') { 
+            newName[i] = 0;
+        }
+        db->dragons[db->nextId].name = newName;
+        db->dragons[db->nextId].id = db->nextId;
+        
+        // gets volant of new dragon
+        bool isValidVolant = changeDragonVolant(&(*db).dragons[db->nextId].isVolant); // returns if the volant is valid
+        if (isValidVolant == true)
+        {
+            // gets fierceness
+            bool isValidFierceness = changeDragonFierceness(&(*db).dragons[db->nextId].fierceness);
+            if (isValidFierceness == true)
+            {
+                changeDragonColours(&(*db).dragons[db->nextId]);
+                db->nextId += 1;
+                saveDatabase("mahmut/files/Dragons.txt", db);
+                loadDatabase("mahmut/files/Dragons.txt", db);
+                puts("Dragon updated."); 
+            } else {
+                printf("--->Err: Given fierceness is out of bound (1-10)\n");
+            }
+            
+        } else {
+            printf("-->Err: Invalid volant, valid volants are (Y, N)\n");
+        }
+    }
+
 }

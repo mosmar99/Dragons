@@ -35,4 +35,7 @@ void getDatabaseFilename(char *);
 // Frees the RAM memory occupied by a Database
 void destroyDatabase(Database *);
 
+// Grows the capacity according to GROWTH_FACTOR
+void expandCapacity(Database *const);
+
 #endif

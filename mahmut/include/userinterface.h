@@ -57,4 +57,6 @@ static bool changeDragonFierceness(unsigned int *fierceness);
 
 static void changeDragonColours(Dragon *dragon);
 
+void doInsertOneDragon(Database *db);
+
 #endif
