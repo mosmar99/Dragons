@@ -220,6 +220,7 @@ void sortDragons(Database *db, const bool sortByName)
         {
             if (sortByName)
             {
+                printf("\n1: %s 2: %s", db->dragons[j].name, db->dragons[j+1].name);
                 if (strcmp(db->dragons[j].name, db->dragons[j + 1].name) > 0)
                 {
                     swapDragons(&db->dragons[j], &db->dragons[j + 1]);

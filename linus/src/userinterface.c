@@ -190,7 +190,6 @@ void getDragonNameOrId(char *const identifier)
 
 void printOneDragon(const Database *const db)
 {
-    puts("");
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
@@ -348,6 +347,10 @@ void doDeleteDragon(Database *const db)
     {
         ix++;
     }
+    for (size_t i = 0; i < db->size; i++) {
+        db->dragons[i].id = i+1;
+    }
+    db->nextId -= 1;
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon deleted.");

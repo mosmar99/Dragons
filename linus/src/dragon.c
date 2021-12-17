@@ -74,12 +74,11 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
         strcpy(*(dest->colours + colourIx), *(src->colours + colourIx));
     }
 
-    // free any extra colours left behind by the now copied-over dragon
     freeColours(dest, colourIx, MAX_COLOURS - 1);
 }
 
 void freeColours(Dragon *dragon, size_t lower, const size_t higher)
-{
+{   
     assert(higher < MAX_COLOURS);
     for (; lower <= higher; lower++)
     {
