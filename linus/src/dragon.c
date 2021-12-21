@@ -61,7 +61,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
         // allocate memory if needed
         if (!*(dest->colours + colourIx))
         {
-            *(dest->colours + colourIx) = calloc(MAX_COLOURS, sizeof(char));
+            *(dest->colours + colourIx) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(dest->colours + colourIx))
             {
                 

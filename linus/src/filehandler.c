@@ -16,9 +16,14 @@ void loadDatabase(const char *const filename, Database *const db)
     FILE *filePtr = fopen(filenameToUse, "r");
     if (!filePtr)
     {
-        fprintf(stderr, "Error: failed to open %s.\n", filenameToUse);
-        getchar();
-        exit(-1);
+        filePtr = fopen(filenameToUse, "w");
+        if (!filePtr)
+        {
+            fprintf(stderr, "Error: failed top open %s\n", filenameToUse);
+            getchar();
+            exit(-1);
+        }
+        
     }
 
     // read how many dragons there are in the list

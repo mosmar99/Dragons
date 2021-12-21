@@ -120,7 +120,7 @@ void getDatabaseFilename(char *const filename)
     scanf("%49s", filename);
 }
 
-void listAllDragonsBrief(const Database *const db)
+static void listAllDragonsBrief(const Database *const db)
 {
     puts("");
     const size_t idWidth = 5;
@@ -139,7 +139,7 @@ void listAllDragonsBrief(const Database *const db)
     }
 }
 
-void listAllDragonsDetailed(const Database *const db)
+static void listAllDragonsDetailed(const Database *const db)
 {
     puts("");
     const size_t idWidth = 5;
@@ -180,7 +180,7 @@ void listAllDragonsDetailed(const Database *const db)
     }
 }
 
-void getDragonNameOrId(char *const identifier)
+static void getDragonNameOrId(char *const identifier)
 {
     printf("\nEnter ID or name of dragon: ");
     fflush(stdin);
@@ -188,7 +188,7 @@ void getDragonNameOrId(char *const identifier)
     stringToUppercase(identifier);
 }
 
-void printOneDragon(const Database *const db)
+static void printOneDragon(const Database *const db)
 {
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
@@ -231,7 +231,7 @@ void printOneDragon(const Database *const db)
     puts("");
 }
 
-void printDatabaseInfo(const Database *const db)
+static void printDatabaseInfo(const Database *const db)
 {
     puts("");
     const size_t sizeWidth = 4;
@@ -271,7 +271,7 @@ void printDatabaseInfo(const Database *const db)
     }
 }
 
-void doUpdateDragon(Database *const db)
+static void doUpdateDragon(Database *const db)
 {
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
@@ -287,7 +287,7 @@ void doUpdateDragon(Database *const db)
     puts("Dragon updated.");
 }
 
-void doInsertDragon(Database *const db)
+static void doInsertDragon(Database *const db)
 {
     // check if it's needed to expand database capacity
     if (db->size == db->capacity)
@@ -332,7 +332,7 @@ void doInsertDragon(Database *const db)
     puts("Dragon inserterd.");
 }
 
-void doDeleteDragon(Database *const db)
+static void doDeleteDragon(Database *const db)
 {
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
@@ -356,7 +356,7 @@ void doDeleteDragon(Database *const db)
     puts("Dragon deleted.");
 }
 
-void doSortDragons(Database *const db)
+static void doSortDragons(Database *const db)
 {
     if (db->size <= 1)
     {
@@ -378,7 +378,7 @@ void doSortDragons(Database *const db)
     puts("Database sorted.");
 }
 
-void updateDragon(Dragon *const dragon)
+static void updateDragon(Dragon *const dragon)
 {
     // update volant
     char volantTest;
