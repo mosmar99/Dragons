@@ -33,7 +33,16 @@ static void doDeleteDragon(Database *const db);
 static void doSortDragons(Database *const db);
 
 // Update a dragon's attributes, excl. name and id
-static void updateDragon(Dragon *const db);
+static void updateDragon(Dragon *const dragon);
+
+// Update a dragon's volant
+static void updateVolant(Dragon *const dragon);
+
+// Update a dragon's fierceness
+static void updateFierce(Dragon *const dragon);
+
+// Update a dragon's colours
+static void updateColours(Dragon *const dragon);
 
 // Converts a string to all uppercase
 static void stringToUppercase(char *const str);
@@ -381,7 +390,13 @@ static void doSortDragons(Database *const db)
 
 static void updateDragon(Dragon *const dragon)
 {
-    // update volant
+    updateVolant(dragon);
+    updateFierce(dragon);
+    updateColours(dragon);
+}
+
+static void updateVolant(Dragon *const dragon)
+{
     char volant;
     do
     {
@@ -394,8 +409,11 @@ static void updateDragon(Dragon *const dragon)
             fprintf(stderr, "%s", ERROR_STRING_VOLANT);
         }
     } while (volant != 'Y' && volant != 'N');
+    dragon->isVolant = volant;
+}
 
-    // update fierceness
+static void updateFierce(Dragon *const dragon)
+{
     int fierce;
     do
     {
@@ -407,8 +425,11 @@ static void updateDragon(Dragon *const dragon)
             fprintf(stderr, "%s", ERROR_STRING_FIERCE);
         }
     } while (fierce < MIN_FIERCENESS || fierce > MAX_FIERCENESS);
+    dragon->fierceness = fierce;
+}
 
-    // update all colours
+static void updateColours(Dragon *const dragon)
+{
     size_t newColours = 0;
     size_t originalColours = dragon->numColours;
     for (size_t i = 0; i < MAX_COLOURS; i++)
