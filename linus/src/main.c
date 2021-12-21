@@ -2,6 +2,7 @@
 #include "dragon.h"
 #include "filehandler.h"
 #include "userinterface.h"
+#include <stdio.h>
 
 int main()
 {

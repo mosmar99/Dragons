@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 void loadDatabase(const char *const filename, Database *const db)
 {

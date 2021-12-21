@@ -1,4 +1,9 @@
 #include "database.h"
+#include <stdio.h>
+#include <ctype.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
 
 // Returns whether or not the string entered by user is an integer or name
 static bool isID(const char *const str);

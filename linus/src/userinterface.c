@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 // Prints a list of all dragons (brief)
 static void listAllDragonsBrief(const Database *const db);
