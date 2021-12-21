@@ -48,7 +48,7 @@ static void updateColours(Dragon *const dragon);
 static void stringToUppercase(char *const str);
 
 // Only letters in the english alphabet is allowed
-bool checkNameOrColour(const char *const str);
+static bool checkNameOrColour(const char *const str);
 
 void printWelcomeMessage()
 {
@@ -514,7 +514,7 @@ static void stringToUppercase(char *const str)
     }
 }
 
-bool checkNameOrColour(const char *const str)
+static bool checkNameOrColour(const char *const str)
 {
     for (const char *c = str; *c != '\n' && *c != 0; c++)
     {
