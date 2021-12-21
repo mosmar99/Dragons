@@ -10,7 +10,7 @@
 #define ERROR_STRING_COLOUR_VALID ERROR_STRING_NAME_VALID
 
 // Prompts user for the filename of the database (e.g. "dragons.txt")
-// Parameters: (the string to be the full path to the .txt file)
+// Parameter: (the string to be the full path to the .txt file)
 void getDatabaseFilename(char *const str);
 
 // Prints the initial welcome message.

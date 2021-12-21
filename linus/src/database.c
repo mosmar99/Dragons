@@ -109,7 +109,7 @@ int searchForDragon(const Database *const db, const char *const identifier)
     return id;
 }
 
-bool isID(const char *const identifier)
+static bool isID(const char *const identifier)
 {
     for (const char *i = identifier; *i != '\0'; i++)
     {
