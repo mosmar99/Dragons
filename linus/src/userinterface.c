@@ -162,7 +162,8 @@ static void listAllDragonsDetailed(const Database *const db)
     const size_t numColoursWidth = 8;
     const size_t coloursWidth = MAX_COLOURS * MAX_COLOUR_NAME;
     puts("--------------------------------------------------------------------------------");
-    printf("%*s  %-*s%s  %*s  %*s  %-*s\n", idWidth, "ID", nameWidth, "Name", "Volant", fiercenessWidth, "Fierceness", numColoursWidth, "#Colours", coloursWidth, "Colours");
+    printf("%*s  %-*s%s  %*s  %*s  %-*s\n", idWidth, "ID", nameWidth, "Name", "Volant",
+           fiercenessWidth, "Fierceness", numColoursWidth, "#Colours", coloursWidth, "Colours");
     puts("--------------------------------------------------------------------------------");
 
     // loop through all dragons
@@ -223,7 +224,8 @@ static void printOneDragon(const Database *const db)
     const size_t numColoursWidth = 8;
     const size_t coloursWidth = MAX_COLOURS * MAX_COLOUR_NAME;
     puts("--------------------------------------------------------------------------------");
-    printf("%*s  %-*s%s  %*s  %*s  %-*s\n", idWidth, "ID", nameWidth, "Name", "Volant", fiercenessWidth, "Fierceness", numColoursWidth, "#Colours", coloursWidth, "Colours");
+    printf("%*s  %-*s%s  %*s  %*s  %-*s\n", idWidth, "ID", nameWidth, "Name", "Volant",
+           fiercenessWidth, "Fierceness", numColoursWidth, "#Colours", coloursWidth, "Colours");
     puts("--------------------------------------------------------------------------------");
 
     // print id
@@ -271,7 +273,8 @@ static void printDatabaseInfo(const Database *const db)
     getDatabaseInfo(db, &max, &min, &volant, &nonVolant);
 
     puts("---------------------------------------------------------");
-    printf("%*s  %*s  %*s  %*s  %*s\n", sizeWidth, "Size", fiercenessWidth, "MinFierceness", fiercenessWidth, "MaxFierceness", volantWidth, "#Volant", nonVolantWidth, "#NonVolant");
+    printf("%*s  %*s  %*s  %*s  %*s\n", sizeWidth, "Size", fiercenessWidth, "MinFierceness",
+           fiercenessWidth, "MaxFierceness", volantWidth, "#Volant", nonVolantWidth, "#NonVolant");
     puts("---------------------------------------------------------");
 
     // print size
