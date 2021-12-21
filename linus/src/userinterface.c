@@ -356,11 +356,6 @@ static void doDeleteDragon(Database *const db)
     {
         ix++;
     }
-    for (size_t i = 0; i < db->size; i++)
-    {
-        db->dragons[i].id = i + 1;
-    }
-    db->nextId -= 1;
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon deleted.");
@@ -454,7 +449,6 @@ static void updateColours(Dragon *const dragon)
         else
         {
             *colour = 0;
-            // free the remaining colours
             freeColours(dragon, i, MAX_COLOURS - 1);
             dragon->numColours = newColours;
             return;

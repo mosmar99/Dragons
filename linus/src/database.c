@@ -187,7 +187,7 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
             free all memory occupied by dragon
             decrement db size
     */
-    if (!db->size)
+    if (db->size == 0)
     {
         return true; // do nothing if database is empty
     }
