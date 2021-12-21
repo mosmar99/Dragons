@@ -47,6 +47,9 @@ static void updateColours(Dragon *const dragon);
 // Converts a string to all uppercase
 static void stringToUppercase(char *const str);
 
+// Only letters in the english alphabet is allowed
+bool checkNameOrColour(const char *const str);
+
 void printWelcomeMessage()
 {
     puts("This program helps organize information about dragons. You may add and");
@@ -193,12 +196,18 @@ static void getDragonNameOrId(char *const identifier)
 {
     printf("\nEnter ID or name of dragon: ");
     fflush(stdin);
-    scanf("%24s", identifier);
+    scanf("%19s", identifier);
     stringToUppercase(identifier);
 }
 
 static void printOneDragon(const Database *const db)
 {
+    if (db->size == 0)
+    {
+        fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
+        return;
+    }
+
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
@@ -242,6 +251,12 @@ static void printOneDragon(const Database *const db)
 
 static void printDatabaseInfo(const Database *const db)
 {
+    if (db->size == 0)
+    {
+        puts("Database is empty.");
+        return;
+    }
+
     puts("");
     const size_t sizeWidth = 4;
     const size_t fiercenessWidth = 13;
@@ -261,27 +276,29 @@ static void printDatabaseInfo(const Database *const db)
     // print size
     printf("%*llu", sizeWidth, db->size);
 
-    // don't print anything else if database is empty
-    if (db->size > 0)
-    {
-        // print min fierceness
-        printf("  %*llu", fiercenessWidth, min);
+    // print min fierceness
+    printf("  %*llu", fiercenessWidth, min);
 
-        // print max fierceness
-        printf("  %*llu", fiercenessWidth, max);
+    // print max fierceness
+    printf("  %*llu", fiercenessWidth, max);
 
-        // print volant
-        printf("  %*llu", volantWidth, volant);
+    // print volant
+    printf("  %*llu", volantWidth, volant);
 
-        // print non-volant
-        printf("  %*llu", nonVolantWidth, nonVolant);
+    // print non-volant
+    printf("  %*llu", nonVolantWidth, nonVolant);
 
-        puts("");
-    }
+    puts("");
 }
 
 static void doUpdateDragon(Database *const db)
 {
+    if (db->size == 0)
+    {
+        fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
+        return;
+    }
+
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
@@ -306,18 +323,10 @@ static void doInsertDragon(Database *const db)
         loadDatabase(NULL, db);
     }
 
-    db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
-    if (!&db->dragons[db->size])
-    {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON);
-        getchar();
-        exit(-1);
-    }
-
     // id
     db->dragons[db->size].id = db->nextId++;
     const int ix = idToIndex(db, &db->dragons[db->size++].id);
-    assert(ix > 0);
+    assert(ix >= 0);
 
     // name
     db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
@@ -328,9 +337,20 @@ static void doInsertDragon(Database *const db)
         getchar();
         exit(-1);
     }
+
+    puts("");
     char name[MAX_NAME - 1];
-    printf("\nEnter name: ");
-    scanf("%24s", name);
+    do
+    {
+        printf("Enter name: ");
+        fflush(stdin);
+        fgets(name, MAX_NAME - 1, stdin);
+        if (!checkNameOrColour(name))
+        {
+            fprintf(stderr, "%s", ERROR_STRING_COLOUR_VALID);
+        }
+    } while (!checkNameOrColour(name));
+
     stringToUppercase(name);
     strcpy(db->dragons[ix].name, name);
 
@@ -343,6 +363,12 @@ static void doInsertDragon(Database *const db)
 
 static void doDeleteDragon(Database *const db)
 {
+    if (db->size == 0)
+    {
+        fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
+        return;
+    }
+
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     int ix = searchForDragon(db, identifier);
@@ -363,9 +389,10 @@ static void doDeleteDragon(Database *const db)
 
 static void doSortDragons(Database *const db)
 {
-    if (db->size <= 1)
+    if (db->size <= 1) // pointless to sort empty array or array of size 0 or 1
     {
-        return; // pointless to sort empty array or array of size 1
+        puts("You can't sort a database with no more than 1 dragon, dummy.");
+        return;
     }
 
     puts("");
@@ -430,9 +457,18 @@ static void updateColours(Dragon *const dragon)
     for (size_t i = 0; i < MAX_COLOURS; i++)
     {
         char colour[MAX_COLOUR_NAME - 1];
-        printf("Colour (%llu of %llu): ", i + 1, MAX_COLOURS);
-        fflush(stdin);
-        fgets(colour, MAX_COLOUR_NAME - 1, stdin);
+        do
+        {
+            printf("Colour (%llu of %llu): ", i + 1, MAX_COLOURS);
+            fflush(stdin);
+            fgets(colour, MAX_COLOUR_NAME - 1, stdin);
+            if (!checkNameOrColour(colour))
+            {
+                fprintf(stderr, "%s", ERROR_STRING_NAME_VALID);
+            }
+
+        } while (!checkNameOrColour(colour));
+
         stringToUppercase(colour);
 
         if (*colour != '\n')
@@ -476,4 +512,16 @@ static void stringToUppercase(char *const str)
     {
         *ix = toupper(*ix);
     }
+}
+
+bool checkNameOrColour(const char *const str)
+{
+    for (const char *c = str; *c != '\n' && *c != 0; c++)
+    {
+        if (!isalpha(*c))
+        {
+            return false;
+        }
+    }
+    return true;
 }

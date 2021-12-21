@@ -3,10 +3,14 @@
 
 #include "database.h"
 
-// An error string used in menu selection
+// Error strings used in error messages
 #define ERROR_STRING_MENU_SELECTION "\nInvalid selection. Please try again.\n"
+#define ERROR_STRING_DATABASE_EMPTY "Error: no dragons in database\n"
+#define ERROR_STRING_NAME_VALID "Error: only letters in the english alphabet is allowed\n"
+#define ERROR_STRING_COLOUR_VALID ERROR_STRING_NAME_VALID
 
 // Prompts user for the filename of the database (e.g. "dragons.txt")
+// Parameters: (the string to be the full path to the .txt file)
 void getDatabaseFilename(char *const str);
 
 // Prints the initial welcome message.
@@ -16,6 +20,7 @@ void printWelcomeMessage();
 void printMenu();
 
 // Contains functionality of the menu
+// Parameters: (a database)
 void executeCommands(Database *const db);
 
 #endif

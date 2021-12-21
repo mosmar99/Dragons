@@ -18,10 +18,10 @@
 #define MAX_COLOURS 5
 
 // Maximum (minus 1) length allowed as a colour's name
-#define MAX_COLOUR_NAME 25
+#define MAX_COLOUR_NAME 20
 
 // The maximum (minus 1) length allowed in a dragon's name
-#define MAX_NAME 25
+#define MAX_NAME 20
 
 typedef struct Dragon
 {
@@ -34,12 +34,15 @@ typedef struct Dragon
 } Dragon;
 
 // Swaps two dragons
+// Parameters: (a dragon), (another dragon)
 void swapDragons(Dragon *const d1, Dragon *const d2);
 
 // Free all colours of a dragon within the given indexes
+// Parameters: (a dragon), (lower bound, inclusive), (higher bound, inclusive)
 void freeColours(Dragon *const d, size_t, const size_t);
 
 // Copy a dragon to another
+// Parameters: (the destination dragon), (the source dragon)
 void copyDragon(Dragon *const dest, const Dragon *const src);
 
 #endif

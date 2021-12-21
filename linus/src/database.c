@@ -123,12 +123,7 @@ bool isID(const char *const identifier)
 
 void getDatabaseInfo(const Database *const db, size_t *const max, size_t *const min, size_t *const volant, size_t *const nonVolant)
 {
-    if (db->size == 0)
-    {
-        fprintf(stderr,"No dragons in database.\n");
-        return;
-    }
-
+    assert(db->size > 0);
     *max = db->dragons[0].fierceness;
     *min = db->dragons[0].fierceness;
     *volant = 0;
