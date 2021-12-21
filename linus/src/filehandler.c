@@ -29,7 +29,7 @@ void loadDatabase(const char *const filename, Database *const db)
     fscanf(filePtr, "%llu", &db->size);
 
     // loop through all dragons
-    for (size_t dragonIndex = 0; dragonIndex < db->size && !feof(filePtr); dragonIndex++)
+    for (size_t dragonIndex = 0; dragonIndex < db->size && dragonIndex < db->capacity && !feof(filePtr); dragonIndex++)
     {
         // read id
         fscanf(filePtr, "%d", &db->dragons[dragonIndex].id);
@@ -51,7 +51,7 @@ void loadDatabase(const char *const filename, Database *const db)
 
         // read fierceness
         fscanf(filePtr, "%d", &db->dragons[dragonIndex].fierceness);
-        assert(db->dragons[dragonIndex].fierceness >= 1 && db->dragons[dragonIndex].fierceness <= 10);
+        assert(db->dragons[dragonIndex].fierceness >= MIN_FIERCENESS && db->dragons[dragonIndex].fierceness <= MAX_FIERCENESS);
 
         // read # of colours
         fscanf(filePtr, "%d", &db->dragons[dragonIndex].numColours);
@@ -81,8 +81,15 @@ void loadDatabase(const char *const filename, Database *const db)
     }
     fscanf(filePtr, "%d", &db->nextId);
     assert(db->nextId > 0);
-
     fclose(filePtr);
+
+    // check if the number of dragons in .txt file exceeded database capacity
+    if (db->size > db->capacity)
+    {
+        // expand capacity and load again
+        expandCapacity(db);
+        loadDatabase(NULL, db);
+    }
 }
 
 void saveDatabase(const char *const filename, const Database *const db)

@@ -43,11 +43,7 @@ void expandCapacity(Database *const db)
         // free dragon in old array
         free(db->dragons[dragonIx].name);
         db->dragons[dragonIx].name = NULL;
-        for (size_t i = 0; i < MAX_COLOURS; i++)
-        {
-            free(*(db->dragons[dragonIx].colours + i));
-            *(db->dragons[dragonIx].colours + i) = NULL;
-        }
+        freeColours(&db->dragons[dragonIx], 0, MAX_COLOURS - 1);
     }
     free(db->dragons);
 
