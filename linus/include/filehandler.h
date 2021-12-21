@@ -3,6 +3,8 @@
 
 #include "database.h"
 
+#define ERROR_STRING_DATABASE_OPEN "Error: failed to open"
+
 // Loads the content in .txt file into the database
 void loadDatabase(const char *const str, Database *const db);
 

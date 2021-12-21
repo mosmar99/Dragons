@@ -3,6 +3,17 @@
 
 #include <stdlib.h>
 
+// Error strings used as error messages
+#define ERROR_STRING_VOLANT "Error: invalid volant input\n"
+#define ERROR_STRING_FIERCE "Error: invalid range\n"
+#define ERROR_STRING_DRAGON_COLOUR "Error: failed to allocate memory for dragon colour\n"
+#define ERROR_STRING_DRAGON "Error: failed to allocate memory for new dragon\n"
+#define ERROR_STRING_DRAGON_NAME "Error: failed to allocate memory for dragon name\n"
+
+// The minimum and maximum fierceness allowed
+#define MIN_FIERCENESS 1
+#define MAX_FIERCENESS 10
+
 // The maximum number of colours any dragon can have
 #define MAX_COLOURS 5
 

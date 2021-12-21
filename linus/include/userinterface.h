@@ -3,6 +3,9 @@
 
 #include "database.h"
 
+// An error string used in menu selection
+#define ERROR_STRING_MENU_SELECTION "\nInvalid selection. Please try again.\n"
+
 // Prompts user for the filename of the database (e.g. "dragons.txt")
 void getDatabaseFilename(char *const str);
 

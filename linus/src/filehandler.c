@@ -19,11 +19,10 @@ void loadDatabase(const char *const filename, Database *const db)
         filePtr = fopen(filenameToUse, "w");
         if (!filePtr)
         {
-            fprintf(stderr, "Error: failed top open %s\n", filenameToUse);
+            fprintf(stderr, "%s %s\n", ERROR_STRING_DATABASE_OPEN, filenameToUse);
             getchar();
             exit(-1);
         }
-        
     }
 
     // read how many dragons there are in the list
@@ -40,7 +39,7 @@ void loadDatabase(const char *const filename, Database *const db)
         db->dragons[dragonIndex].name = calloc(MAX_NAME, sizeof(char));
         if (!db->dragons[dragonIndex].name)
         {
-            fprintf(stderr, "Error: failed to allocate memory for a dragon's name.\n");
+            fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
             getchar();
             exit(-1);
         }
@@ -64,7 +63,7 @@ void loadDatabase(const char *const filename, Database *const db)
             *(db->dragons[dragonIndex].colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(db->dragons[dragonIndex].colours + i))
             {
-                fprintf(stderr, "Error: failed to allocate memory for a dragon's colour.\n");
+                fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
                 getchar();
                 exit(-1);
             }
@@ -99,7 +98,7 @@ void saveDatabase(const char *const filename, const Database *const db)
     FILE *filePtr = fopen(filenameToUse, "w");
     if (!filePtr)
     {
-        fprintf(stderr,"Error: failed to open %s.\n", filenameToUse);
+        fprintf(stderr, "%s %s.\n", ERROR_STRING_DATABASE_OPEN, filenameToUse);
         getchar();
         exit(-1);
     }

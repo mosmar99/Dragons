@@ -107,7 +107,7 @@ void executeCommands(Database *const db)
             puts("Have a good one! See ya!");
             break;
         default:
-            puts("\nInvalid selection. Please try again.");
+            fprintf(stderr, "%s", ERROR_STRING_MENU_SELECTION);
             break;
         }
     }
@@ -300,7 +300,7 @@ static void doInsertDragon(Database *const db)
     db->dragons[db->size] = *(Dragon *)calloc(sizeof(Dragon), sizeof(char));
     if (!&db->dragons[db->size])
     {
-        fprintf(stderr,"Error: failed to allocate memory for new dragon\n");
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON);
         getchar();
         exit(-1);
     }
@@ -314,8 +314,8 @@ static void doInsertDragon(Database *const db)
     db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
     if (!db->dragons[ix].name)
     {
-        
-        fprintf(stderr,"Error: failed to allocate memory for new dragon's name\n");
+
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
         getchar();
         exit(-1);
     }
@@ -347,8 +347,9 @@ static void doDeleteDragon(Database *const db)
     {
         ix++;
     }
-    for (size_t i = 0; i < db->size; i++) {
-        db->dragons[i].id = i+1;
+    for (size_t i = 0; i < db->size; i++)
+    {
+        db->dragons[i].id = i + 1;
     }
     db->nextId -= 1;
     saveDatabase(NULL, db);
@@ -381,37 +382,31 @@ static void doSortDragons(Database *const db)
 static void updateDragon(Dragon *const dragon)
 {
     // update volant
-    char volantTest;
-    printf("Enter volant (Y, N): ");
-    fflush(stdin);
-    scanf("%c", &volantTest);
-    volantTest = toupper(volantTest);
-    if (volantTest != 'Y' && volantTest != 'N')
+    char volant;
+    do
     {
-        fprintf(stderr,"Error: invalid volant input");
-        fprintf(stderr,"Default: N\n");
-        dragon->isVolant = 'N';
-    }
-    else
-    {
-        dragon->isVolant = volantTest;
-    }
+        printf("Enter volant (Y, N): ");
+        fflush(stdin);
+        scanf("%c", &volant);
+        volant = toupper(volant);
+        if (volant != 'Y' && volant != 'N')
+        {
+            fprintf(stderr, "%s", ERROR_STRING_VOLANT);
+        }
+    } while (volant != 'Y' && volant != 'N');
 
     // update fierceness
-    int fierceTest;
-    printf("Enter fierceness (1-10): ");
-    fflush(stdin);
-    scanf("%2d[0123456789]", &fierceTest);
-    if (fierceTest < 1 || fierceTest > 10)
+    int fierce;
+    do
     {
-        fprintf(stderr,"Error: invalid range\n");
-        fprintf(stderr,"Default: 1\n");
-        dragon->fierceness = 1;
-    }
-    else
-    {
-        dragon->fierceness = fierceTest;
-    }
+        printf("Enter fierceness (%d-%d): ", MIN_FIERCENESS, MAX_FIERCENESS);
+        fflush(stdin);
+        scanf("%2d[0123456789]", &fierce);
+        if (fierce < MIN_FIERCENESS || fierce > MAX_FIERCENESS)
+        {
+            fprintf(stderr, "%s", ERROR_STRING_FIERCE);
+        }
+    } while (fierce < MIN_FIERCENESS || fierce > MAX_FIERCENESS);
 
     // update all colours
     size_t newColours = 0;
@@ -421,31 +416,25 @@ static void updateDragon(Dragon *const dragon)
         char colour[MAX_COLOUR_NAME - 1];
         printf("Colour (%llu of %llu): ", i + 1, MAX_COLOURS);
         fflush(stdin);
-        fgets(colour, MAX_COLOUR_NAME-1, stdin);
-        char *ix;
-        for (char *ix = colour; *ix != '\n'; ix++)
-        {
-            *ix = toupper(*ix);
-        }
+        fgets(colour, MAX_COLOUR_NAME - 1, stdin);
+        stringToUppercase(colour);
 
-        if(*colour != '\n') {
-            for (size_t m = 0; ; m++) {
-                if(colour[m] == '\n') {
+        if (*colour != '\n')
+        {
+            for (size_t m = 0;; m++)
+            {
+                if (colour[m] == '\n')
+                {
                     colour[m] = 0;
                     break;
                 }
             }
         }
-        
-        if (*colour == '\n')
+        else
         {
             *colour = 0;
             // free the remaining colours
-            for (size_t j = i; j < MAX_COLOURS && j < originalColours; j++)
-            {
-                free(*(dragon->colours + j));
-                *(dragon->colours + j) = NULL;
-            }
+            freeColours(dragon, i, MAX_COLOURS - 1);
             dragon->numColours = newColours;
             return;
         }
@@ -456,7 +445,7 @@ static void updateDragon(Dragon *const dragon)
             *(dragon->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(dragon->colours + i))
             {
-                fprintf(stderr,"Error: failed to allocate memory for a dragon's colour\n");
+                fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
                 getchar();
                 exit(-1);
             }

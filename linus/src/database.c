@@ -204,7 +204,7 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
         db->dragons[*arrayIx].name = NULL;
 
         // free all colours
-        freeColours(&db->dragons[*arrayIx], 0, MAX_COLOURS);
+        freeColours(&db->dragons[*arrayIx], 0, MAX_COLOURS - 1);
 
         db->size--;
     }
