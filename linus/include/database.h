@@ -13,6 +13,8 @@
 // Maximum number (minus 1) of characters allowed in name of database
 #define MAX_FILENAME 50
 
+#define SENTINEL -1
+
 typedef struct Database
 {
     Dragon *dragons;       // array of dragons
@@ -34,7 +36,7 @@ void destroyDatabase(Database *);
 
 // Search database for dragon/s by name or ID
 // Returns an array of indexes of dragon/s that matches the identifier
-// If no dragons are found, first element is set to -1
+// If no dragons are found, first (and all) element will be -1
 // Paramters: (a database), (an identifier as either ID or name)
 int *searchForDragon(const Database *const, const char *const);
 

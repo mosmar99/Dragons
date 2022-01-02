@@ -8,6 +8,7 @@
 #define ERROR_STRING_DATABASE_EMPTY "Error: no dragons in database\n"
 #define ERROR_STRING_NAME_VALID "Error: only letters in the english alphabet is allowed\n"
 #define ERROR_STRING_COLOUR_VALID ERROR_STRING_NAME_VALID
+#define ERROR_STRING_DRAGON_NOT_FOUND "Error: dragon/s not found\n"
 
 // Prompts user for the filename of the database (e.g. "dragons.txt")
 // Parameter: (the string to be the full path to the .txt file)

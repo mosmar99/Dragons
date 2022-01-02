@@ -105,7 +105,7 @@ void executeCommands(Database *const db)
             printMenu();
             break;
         case 1:
-            //doInsertDragon(db);
+            doInsertDragon(db);
             break;
         case 2:
             doUpdateDragon(db);
@@ -260,7 +260,7 @@ static void printDatabaseInfo(const Database *const db)
 
 static void doUpdateDragon(Database *const db)
 {
-    /*if (db->size == 0)
+    if (db->size == 0)
     {
         fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
         return;
@@ -268,16 +268,24 @@ static void doUpdateDragon(Database *const db)
 
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
-    int ix = searchForDragon(db, identifier);
-    if (ix < 0)
+    int *indexes = searchForDragon(db, identifier);
+    if (*indexes == SENTINEL)
     {
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
+
+    int ix = *indexes;
+    if (*(indexes + 1) != SENTINEL) // multiple dragons were found
+    {
+        ix = selectOneDragon(db, indexes);
+    }
+
     puts("");
     updateDragon(&db->dragons[ix]);
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
-    puts("Dragon updated.");*/
+    puts("Dragon updated.");
 }
 
 static void doInsertDragon(Database *const db)
@@ -330,7 +338,7 @@ static void doInsertDragon(Database *const db)
 
 static void doDeleteDragon(Database *const db)
 {
-    /*if (db->size == 0)
+    if (db->size == 0)
     {
         fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
         return;
@@ -338,11 +346,19 @@ static void doDeleteDragon(Database *const db)
 
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
-    int ix = searchForDragon(db, identifier);
-    if (ix < 0)
+    int *indexes = searchForDragon(db, identifier);
+    if (*indexes == SENTINEL)
     {
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
+
+    int ix = *indexes;
+    if (*(indexes + 1) != SENTINEL) // multiple dragons were found
+    {
+        ix = selectOneDragon(db, indexes);
+    }
+
     // Delete the dragon by repeatedly copying dragons 1 step left and lastly freeing
     // memory of the last dragon (which has by then copied 1 step left in array)
     while (!deleteDragon(db, &ix))
@@ -351,7 +367,7 @@ static void doDeleteDragon(Database *const db)
     }
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
-    puts("Dragon deleted.");*/
+    puts("Dragon deleted.");
 }
 
 static void doSortDragons(Database *const db)
@@ -498,12 +514,12 @@ static void listOneDragon(const Database *const db)
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
     unsigned int *indexes = searchForDragon(db, identifier);
-    if (*indexes == -1)
+    if (*indexes == SENTINEL)
     {
-        fprintf(stderr, "%s", "Error: dragon/s not found\n");
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
-    if (*(indexes + 1) != 0) // multiple dragons were found
+    if (*(indexes + 1) != SENTINEL) // multiple dragons were found
     {
         int index = selectOneDragon(db, indexes);
 
@@ -511,15 +527,21 @@ static void listOneDragon(const Database *const db)
         *indexes = index;
         for (size_t i = 1; i < db->size; i++)
         {
-            *(indexes + i) = 0;
+            *(indexes + i) = SENTINEL;
         }
     }
+
+    // list 1 dragon
     listDragons(db, indexes, false, true);
+
+    // this should be in database.c somehow...
+    free(indexes);
+    indexes = NULL;
 }
 
 static int selectOneDragon(const Database *const db, const unsigned int *const ixs)
 {
-    puts("Multiple dragons were found. Select one by ID.");
+    puts("\nMultiple dragons were found. Select one by ID.");
     listDragons(db, ixs, false, true);
     unsigned int id;
     do
@@ -537,11 +559,14 @@ static int selectOneDragon(const Database *const db, const unsigned int *const i
 
 static bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id)
 {
-    for (size_t i = 0; *ixs + i < db->size; i++)
+    for (size_t dragonIx = 0; dragonIx < db->size; dragonIx++) // loop all dragons
     {
-        if (db->dragons[*(ixs + i)].id == id)
+        for (size_t ixsIx = 0; ixsIx < db->size; ixsIx++) // loop all indexes in ixs
         {
-            return true;
+            if (ixs[ixsIx] == dragonIx && db->dragons[dragonIx].id == id)
+            {
+                return true;
+            }
         }
     }
 

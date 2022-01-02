@@ -78,14 +78,18 @@ void destroyDatabase(Database *db)
 
 int *searchForDragon(const Database *const db, const char *const identifier)
 {
-    unsigned int *dragonIndexes = calloc(db->size, sizeof(int)); // array to store indexes of all dragons found that matches the identifier
+    int *dragonIndexes = calloc(db->size, sizeof(int)); // array to store indexes of all dragons found that matches the identifier
     if (!dragonIndexes)
     {
         fprintf(stderr, "%s\n", "Error: failed to allocate memory for dragon indexes array");
         exit(-1);
     }
-    *dragonIndexes = -1;
+    for (size_t i = 0; i < db->size; i++)
+    {
+        dragonIndexes[i] = SENTINEL;
+    }
     
+
     bool isName = !isID(identifier);
 
     int id;
