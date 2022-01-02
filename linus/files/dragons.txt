@@ -1,4 +1,4 @@
-6
+7
 1
 SMAUG
 Y
@@ -40,3 +40,11 @@ N
 1
 RED
 7
+TEST
+Y
+7
+3
+BLACK
+PURPLE
+PINK
+8

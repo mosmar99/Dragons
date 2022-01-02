@@ -13,7 +13,7 @@ Database *createDatabase()
     Database *db = malloc(sizeof(Database));
     if (db == NULL)
     {
-        fprintf(stderr,"Error: failed to allocate memory for database.\n");
+        fprintf(stderr, "Error: failed to allocate memory for database.\n");
         return NULL;
     }
 
@@ -23,7 +23,7 @@ Database *createDatabase()
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
     if (db->dragons == NULL)
     {
-        fprintf(stderr,"Error: failed to allocate memory for dragon array.\n");
+        fprintf(stderr, "Error: failed to allocate memory for dragon array.\n");
         return NULL;
     }
 
@@ -35,7 +35,7 @@ void expandCapacity(Database *const db)
     Dragon *newDragonArray = calloc(GROWTH_FACTOR * db->capacity, sizeof(Dragon));
     if (!newDragonArray)
     {
-        fprintf(stderr,"Error: failed to allocate memory for expanded dragon array.\n");
+        fprintf(stderr, "Error: failed to allocate memory for expanded dragon array.\n");
         getchar();
         exit(-1);
     }
@@ -76,49 +76,59 @@ void destroyDatabase(Database *db)
     db = NULL;
 }
 
-int searchForDragon(const Database *const db, const char *const identifier)
+int *searchForDragon(const Database *const db, const char *const identifier)
 {
+    unsigned int *dragonIndexes = calloc(db->size, sizeof(int)); // array to store indexes of all dragons found that matches the identifier
+    if (!dragonIndexes)
+    {
+        fprintf(stderr, "%s\n", "Error: failed to allocate memory for dragon indexes array");
+        exit(-1);
+    }
+    *dragonIndexes = -1;
+    
     bool isName = !isID(identifier);
 
     int id;
-    if (!isName) // convert the string to an integer
-    {
+    if (!isName)
+    { // convert the string to an integer
         char *endPtr;
         id = strtol(identifier, &endPtr, 0);
         if (id < 1 || idToIndex(db, &id) >= db->size)
         {
-            fprintf(stderr,"Error: non-valid ID: %d\n", id);
-            fprintf(stderr,"Error: dragon not found\n");
-            return -1;
+            fprintf(stderr, "Error: non-valid ID: %d\n", id);
+            return dragonIndexes;
         }
     }
 
     // search for a match
+    unsigned int counter = 0;
+
     for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
     {
         if (isName)
         {
             if (strcmp(db->dragons[dragonIndex].name, identifier) == 0)
             {
-                return idToIndex(db, &db->dragons[dragonIndex].id);
+                dragonIndexes[counter++] = idToIndex(db, &db->dragons[dragonIndex].id);
             }
         }
         else
         {
             if (db->dragons[dragonIndex].id == id)
             {
-                return idToIndex(db, &db->dragons[dragonIndex].id);
+                dragonIndexes[counter++] = idToIndex(db, &db->dragons[dragonIndex].id);
+                break; // a dragon's ID is ALWAYS unique
             }
         }
     }
-    return id;
+    return dragonIndexes;
 }
 
 static bool isID(const char *const identifier)
 {
     for (const char *i = identifier; *i != '\0'; i++)
     {
-        unsigned int c = (int)*i; // convert a character to its ASCII value in decimals
+        unsigned int c = (int)*i;     // convert a character to its ASCII value in decimals
         if (!isdigit(c) && *i != '-') // only non-digit allowed in a number is '-'
         {
             return false;

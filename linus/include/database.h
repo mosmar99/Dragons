@@ -32,10 +32,11 @@ void expandCapacity(Database *const);
 // Parameter: (a database)
 void destroyDatabase(Database *);
 
-// Search database for a dragon by name or ID
-// Returns its array index or -1 if not found
+// Search database for dragon/s by name or ID
+// Returns an array of indexes of dragon/s that matches the identifier
+// If no dragons are found, first element is set to -1
 // Paramters: (a database), (an identifier as either ID or name)
-int searchForDragon(const Database *const, const char *const);
+int *searchForDragon(const Database *const, const char *const);
 
 // Gather min and max values for fierceness, #volant and #non-volant
 // Parameters:(a database), (mininimum fierceness), (maximum fierceness), (number of volant), (number of non-volant)
