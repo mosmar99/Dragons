@@ -1,6 +1,13 @@
 #ifndef _DRAGON_H
 #define _DRAGON_H
 
+/*
+File: dragon.h
+Description: 
+This file contains the interface of certain functions
+to handle dragons and their attributes
+*/
+
 #include <stdlib.h>
 
 // Error strings used as error messages

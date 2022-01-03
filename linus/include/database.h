@@ -1,13 +1,20 @@
 #ifndef _DATABASE_H
 #define _DATABASE_H
 
+/*
+File: database.h.h
+Description: 
+This file contains the interface of many functions to handle
+a database and its properties
+*/
+
 #include <stdbool.h>
 #include "dragon.h"
 
 // The initial capacity of the database
 #define INITIAL_CAPACITY 10
 
-// If the database gets full, its size multiplies with this growth factor
+// If the database gets full, its size multiplies with this factor
 #define GROWTH_FACTOR 2
 
 // Maximum number (minus 1) of characters allowed in name of database
@@ -29,7 +36,7 @@ typedef struct Database
 // Creates an empty database on heap and returns pointer to it
 Database *createDatabase();
 
-// Grows the capacity according to GROWTH_FACTOR
+// Increases the database capacity according to GROWTH_FACTOR
 // Paramter: (a database)
 void expandCapacity(Database *const);
 
@@ -39,7 +46,7 @@ void destroyDatabase(Database *);
 
 // Search database for dragon/s by name or ID
 // Returns an array of indexes of dragon/s that matches the identifier
-// If no dragons are found, first (and all) element will be -1
+// The default value is SENTINEL
 // Paramters: (a database), (an identifier as either ID or name)
 int *searchForDragon(const Database *const, const char *const);
 

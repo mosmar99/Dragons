@@ -1,6 +1,13 @@
 #ifndef _USERINTERFACE_H
 #define _USERINTERFACE_H
 
+/*
+File: userinterface.h
+Description: 
+This file contains the interface of printing to the screen
+and handling the inputs from the user
+*/
+
 #include "database.h"
 
 // Error strings used in error messages
