@@ -8,6 +8,12 @@
 // Returns whether or not the string entered by user is an integer or name
 static bool isID(const char *const str);
 
+// Delete a dragon by array index
+// If not last, copies dragon at index + 1
+// Returns true if dragon was last in array
+// Parameters: (a database), (the array-index of a dragon)
+static bool deleteDragon(Database *const, const unsigned int *const);
+
 Database *createDatabase()
 {
     Database *db = malloc(sizeof(Database));
@@ -88,7 +94,6 @@ int *searchForDragon(const Database *const db, const char *const identifier)
     {
         dragonIndexes[i] = SENTINEL;
     }
-    
 
     bool isName = !isID(identifier);
 
@@ -121,7 +126,7 @@ int *searchForDragon(const Database *const db, const char *const identifier)
             if (db->dragons[dragonIndex].id == id)
             {
                 dragonIndexes[counter++] = idToIndex(db, &db->dragons[dragonIndex].id);
-                break; // a dragon's ID is ALWAYS unique
+                break; // a dragon's ID is ALWAYS unique and never reused
             }
         }
     }
@@ -189,7 +194,7 @@ int idToIndex(const Database *const db, const unsigned int *const id)
     return -1;
 }
 
-bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
+static bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
 {
     /*
         if not last dragon in array
@@ -222,6 +227,16 @@ bool deleteDragon(Database *const db, const unsigned int *const arrayIx)
     return isDragonLast;
 }
 
+void doDeleteDragon(Database *const db, int ix)
+{
+    // Delete the dragon by repeatedly copying dragons 1 step left and lastly freeing
+    // memory of the last dragon (which has by then copied 1 step left in array)
+    while (!deleteDragon(db, &ix))
+    {
+        ix++;
+    }
+}
+
 void sortDragons(Database *db, const bool sortByName)
 {
     // Bubblesort
@@ -245,4 +260,39 @@ void sortDragons(Database *db, const bool sortByName)
             }
         }
     }
+}
+
+bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id)
+{
+    for (size_t dragonIx = 0; dragonIx < db->size; dragonIx++) // loop all dragons
+    {
+        for (size_t ixsIx = 0; ixsIx < db->size; ixsIx++) // loop all indexes in ixs
+        {
+            if (ixs[ixsIx] == dragonIx && db->dragons[dragonIx].id == id)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void createName(Database *const db, const char *const name, const unsigned int ix)
+{
+    db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
+    if (!db->dragons[ix].name)
+    {
+
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
+        getchar();
+        exit(-1);
+    }
+    strcpy(db->dragons[ix].name, name);
+}
+
+void freeIntegerArray(int *intArray)
+{
+    free(intArray);
+    intArray = NULL;
 }

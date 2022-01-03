@@ -9,6 +9,7 @@
 #define ERROR_STRING_DRAGON_COLOUR "Error: failed to allocate memory for dragon colour\n"
 #define ERROR_STRING_DRAGON "Error: failed to allocate memory for new dragon\n"
 #define ERROR_STRING_DRAGON_NAME "Error: failed to allocate memory for dragon name\n"
+#define ERROR_STRING_DRAGON_NOT_FOUND "Error: dragon/s not found\n"
 
 // The minimum and maximum fierceness allowed
 #define MIN_FIERCENESS 1
@@ -44,5 +45,9 @@ void freeColours(Dragon *const d, size_t, const size_t);
 // Copy a dragon to another
 // Parameters: (the destination dragon), (the source dragon)
 void copyDragon(Dragon *const dest, const Dragon *const src);
+
+// Allocates memory for a dragon at the indicated colour index
+// Parameters: (the dragon), (the colour index)
+void createNewColour(Dragon *const dragon, const size_t colourIx);
 
 #endif

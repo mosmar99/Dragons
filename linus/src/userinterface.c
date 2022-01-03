@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+// constants used for formatting when printing dragon/s
 #define IDWIDTH 5
 #define NAMEWIDTH MAX_NAME
 #define VOLANTWIDTH 6
@@ -26,16 +27,16 @@ static void printOneDragonStats(const Database *const db, unsigned int ix, bool 
 static void printDatabaseInfo(const Database *const db);
 
 // Handles updating a dragon
-static void doUpdateDragon(Database *const db);
+static void updateDragonHandler(Database *const db);
 
 // Handles inserting a new dragon
-static void doInsertDragon(Database *const db);
+static void insertDragonHandler(Database *const db);
 
 // Handles deleting a dragon
-static void doDeleteDragon(Database *const db);
+static void deleteDragonHandler(Database *const db);
 
 // Handles sorting the database
-static void doSortDragons(Database *const db);
+static void sortDragonsHandler(Database *const db);
 
 // Update a dragon's attributes, excl. name and id
 static void updateDragon(Dragon *const dragon);
@@ -59,10 +60,8 @@ static bool checkNameOrColour(const char *const str);
 static void listOneDragon(const Database *const db);
 
 // Prompts user to select 1 dragon if multiple dragons were found
-// Select 1 dragon using ID and returns its array index
+// Select 1 dragon by ID and returns its array index
 static int selectOneDragon(const Database *const db, const unsigned int *const ixs);
-
-static bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id);
 
 void printWelcomeMessage()
 {
@@ -105,13 +104,13 @@ void executeCommands(Database *const db)
             printMenu();
             break;
         case 1:
-            doInsertDragon(db);
+            insertDragonHandler(db);
             break;
         case 2:
-            doUpdateDragon(db);
+            updateDragonHandler(db);
             break;
         case 3:
-            doDeleteDragon(db);
+            deleteDragonHandler(db);
             break;
         case 4:
             listDragons(db, NULL, true, false); // brief
@@ -126,10 +125,9 @@ void executeCommands(Database *const db)
             printDatabaseInfo(db);
             break;
         case 8:
-            doSortDragons(db);
+            sortDragonsHandler(db);
             break;
         case -1:
-            choice = -1;
             puts("Have a good one! See ya!");
             break;
         default:
@@ -148,14 +146,15 @@ void getDatabaseFilename(char *const filename)
 
 static void listDragons(const Database *const db, const unsigned int *const ixs, bool all, bool detailed)
 {
-    assert(!(ixs == NULL && all == false));
+    assert(!(ixs == NULL && all == false)); // if not all dragons, use indexes from ixs array
 
     puts("");
     puts("--------------------------------------------------------------------------------");
     printf("%*s  %-*s", IDWIDTH, "ID", NAMEWIDTH, "Name");
     if (detailed)
     {
-        printf("%s  %*s  %*s  %-*s\n", "Volant", FIERCENESSWIDTH, "Fierceness", NUMCOLOURSWIDTH, "#Colours", COLOURSWIDTH, "Colours");
+        printf("%s  %*s  %*s  %-*s\n", "Volant", FIERCENESSWIDTH, "Fierceness",
+               NUMCOLOURSWIDTH, "#Colours", COLOURSWIDTH, "Colours");
     }
     else
     {
@@ -203,12 +202,12 @@ static void printOneDragonStats(const Database *const db, unsigned int ix, bool 
         printf("  %*llu", FIERCENESSWIDTH, db->dragons[ix].fierceness);
 
         // print # of colours
-        printf("  %*llu  ", NUMCOLOURSWIDTH, db->dragons[ix].numColours);
+        printf("  %*llu ", NUMCOLOURSWIDTH, db->dragons[ix].numColours);
 
         // print all colours
         for (size_t i = 0; i < db->dragons[ix].numColours; i++)
         {
-            printf("%s ", *(db->dragons[ix].colours + i));
+            printf(" %s", *(db->dragons[ix].colours + i));
         }
     }
 
@@ -258,7 +257,7 @@ static void printDatabaseInfo(const Database *const db)
     puts("");
 }
 
-static void doUpdateDragon(Database *const db)
+static void updateDragonHandler(Database *const db)
 {
     if (db->size == 0)
     {
@@ -283,12 +282,15 @@ static void doUpdateDragon(Database *const db)
 
     puts("");
     updateDragon(&db->dragons[ix]);
+
+    freeIntegerArray(indexes); // free the array created by searchForDragon()
+
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon updated.");
 }
 
-static void doInsertDragon(Database *const db)
+static void insertDragonHandler(Database *const db)
 {
     // check if it's needed to expand database capacity
     if (db->size == db->capacity)
@@ -298,45 +300,37 @@ static void doInsertDragon(Database *const db)
         loadDatabase(NULL, db);
     }
 
-    // id
-    db->dragons[db->size].id = db->nextId++;
-    const int ix = idToIndex(db, &db->dragons[db->size++].id);
-    assert(ix >= 0);
-
-    // name
-    db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
-    if (!db->dragons[ix].name)
-    {
-
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
-        getchar();
-        exit(-1);
-    }
-
+    // prompt name
     puts("");
     char name[MAX_NAME - 1];
     do
     {
         printf("Enter name: ");
         fflush(stdin);
-        fgets(name, MAX_NAME - 1, stdin);
+        scanf("%19s", name);
         if (!checkNameOrColour(name))
         {
             fprintf(stderr, "%s", ERROR_STRING_COLOUR_VALID);
         }
     } while (!checkNameOrColour(name));
-
     stringToUppercase(name);
-    strcpy(db->dragons[ix].name, name);
 
-    // rest of the attributes
+    // assign id
+    db->dragons[db->size].id = db->nextId++;
+    const int ix = idToIndex(db, &db->dragons[db->size++].id);
+    assert(ix >= 0);
+
+    // assign name
+    createName(db, name, ix);
+
+    // assign rest of the attributes
     updateDragon(&db->dragons[ix]);
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon inserterd.");
 }
 
-static void doDeleteDragon(Database *const db)
+static void deleteDragonHandler(Database *const db)
 {
     if (db->size == 0)
     {
@@ -359,22 +353,20 @@ static void doDeleteDragon(Database *const db)
         ix = selectOneDragon(db, indexes);
     }
 
-    // Delete the dragon by repeatedly copying dragons 1 step left and lastly freeing
-    // memory of the last dragon (which has by then copied 1 step left in array)
-    while (!deleteDragon(db, &ix))
-    {
-        ix++;
-    }
+    doDeleteDragon(db, ix);
+
+    freeIntegerArray(indexes); // free the array created by searchForDragon()
+
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon deleted.");
 }
 
-static void doSortDragons(Database *const db)
+static void sortDragonsHandler(Database *const db)
 {
     if (db->size <= 1) // pointless to sort empty array or array of size 0 or 1
     {
-        puts("You can't sort a database with no more than 1 dragon, dummy.");
+        fprintf(stderr, "%s", "No need to sort a database with no more than 1 dragon.\n");
         return;
     }
 
@@ -439,6 +431,7 @@ static void updateColours(Dragon *const dragon)
     size_t originalColours = dragon->numColours;
     for (size_t i = 0; i < MAX_COLOURS; i++)
     {
+        // prompt colour
         char colour[MAX_COLOUR_NAME - 1];
         do
         {
@@ -449,12 +442,10 @@ static void updateColours(Dragon *const dragon)
             {
                 fprintf(stderr, "%s", ERROR_STRING_NAME_VALID);
             }
-
         } while (!checkNameOrColour(colour));
-
         stringToUppercase(colour);
 
-        if (*colour != '\n')
+        if (*colour != '\n') // remove breakline due to fgets()
         {
             for (size_t m = 0;; m++)
             {
@@ -466,7 +457,7 @@ static void updateColours(Dragon *const dragon)
             }
         }
         else
-        {
+        { // if user wants to end colour input, free all remaining colours
             *colour = 0;
             freeColours(dragon, i, MAX_COLOURS - 1);
             dragon->numColours = newColours;
@@ -474,15 +465,9 @@ static void updateColours(Dragon *const dragon)
         }
 
         newColours++;
-        if (newColours > originalColours)
+        if (newColours > originalColours) // if needed, create new space for new colour
         {
-            *(dragon->colours + i) = calloc(MAX_COLOUR_NAME, sizeof(char));
-            if (!*(dragon->colours + i))
-            {
-                fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
-                getchar();
-                exit(-1);
-            }
+            createNewColour(dragon, i);
         }
         strcpy(*(dragon->colours + i), colour);
     }
@@ -513,7 +498,7 @@ static void listOneDragon(const Database *const db)
 {
     char identifier[MAX_NAME - 1];
     getDragonNameOrId(identifier);
-    unsigned int *indexes = searchForDragon(db, identifier);
+    int *indexes = searchForDragon(db, identifier);
     if (*indexes == SENTINEL)
     {
         fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
@@ -534,15 +519,13 @@ static void listOneDragon(const Database *const db)
     // list 1 dragon
     listDragons(db, indexes, false, true);
 
-    // this should be in database.c somehow...
-    free(indexes);
-    indexes = NULL;
+    freeIntegerArray(indexes); // free the array created by searchForDragon()
 }
 
 static int selectOneDragon(const Database *const db, const unsigned int *const ixs)
 {
     puts("\nMultiple dragons were found. Select one by ID.");
-    listDragons(db, ixs, false, true);
+    listDragons(db, ixs, false, false);
     unsigned int id;
     do
     {
@@ -555,20 +538,4 @@ static int selectOneDragon(const Database *const db, const unsigned int *const i
         }
     } while (!dragonsHasID(db, ixs, id));
     return idToIndex(db, &id);
-}
-
-static bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id)
-{
-    for (size_t dragonIx = 0; dragonIx < db->size; dragonIx++) // loop all dragons
-    {
-        for (size_t ixsIx = 0; ixsIx < db->size; ixsIx++) // loop all indexes in ixs
-        {
-            if (ixs[ixsIx] == dragonIx && db->dragons[dragonIx].id == id)
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
 }

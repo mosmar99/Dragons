@@ -85,3 +85,14 @@ void freeColours(Dragon *dragon, size_t lower, const size_t higher)
         *(dragon->colours + lower) = NULL;
     }
 }
+
+void createNewColour(Dragon *const dragon, const size_t colourIx)
+{
+    *(dragon->colours + colourIx) = calloc(MAX_COLOUR_NAME, sizeof(char));
+    if (!*(dragon->colours + colourIx))
+    {
+        fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
+        getchar();
+        exit(-1);
+    }
+}

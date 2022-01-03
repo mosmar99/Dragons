@@ -28,4 +28,3 @@ int main()
     saveDatabase(NULL, database);
     destroyDatabase(database);
 }
-// linus/files/dragons.txt

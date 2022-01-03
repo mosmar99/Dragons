@@ -15,6 +15,9 @@
 
 #define SENTINEL -1
 
+// Error strings used as error messages
+#define ERROR_STRING_DATABASE_EMPTY "Error: no dragons in database\n"
+
 typedef struct Database
 {
     Dragon *dragons;       // array of dragons
@@ -50,13 +53,23 @@ void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t
 int idToIndex(const Database *const, const unsigned int *const);
 
 // Delete a dragon by array index
-// If not last, copies dragon at index + 1
-// Returns true if dragon was last in array
 // Parameters: (a database), (the array-index of a dragon)
-bool deleteDragon(Database *const, const unsigned int *const);
+void doDeleteDragon(Database *const db, int ix);
 
 // Sort the database in ascending order by name or id
 // Parameters: (a database), (bool = true by name, bool = false by id)
 void sortDragons(Database *const, const bool);
+
+// Checks if the selected ID is present in the database
+// Parameters: (a database), (an int array with array indexes of dragon/s), (an ID to check)
+bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id);
+
+// Allocates memory for a dragon's name at a certain array index
+// Parameters: (a database), (the name for new dragon), (the array index of the dragon)
+void createName(Database *const db, const char *const name, const unsigned int ix);
+
+// Used to free the integer array created by searchForDragon()
+// Parameters: (the array)
+void freeIntegerArray(int *array);
 
 #endif
