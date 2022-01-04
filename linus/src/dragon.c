@@ -3,13 +3,21 @@
 #include <string.h>
 #include <assert.h>
 
+// Error strings used in error messages
+#define ERROR_STRING_DRAGON_CREATE "Error: failed to allocate memory for new dragon"
+
 void swapDragons(Dragon *const d1, Dragon *const d2)
 {
+    if (d1 == d2)
+    {
+        return; // no need to swap a dragon with itself
+    }
+    
     // set up a temporary dragon
     Dragon *temp = calloc(1, sizeof(Dragon));
     if (!temp)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON);
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_CREATE);
         getchar();
         exit(-1);
     }
@@ -29,13 +37,18 @@ void swapDragons(Dragon *const d1, Dragon *const d2)
 
 void copyDragon(Dragon *const dest, const Dragon *const src)
 {
+    if (dest == src)
+    {
+        return; // no need to copy a dragon to itself
+    }
+    
     // copy name
     if (!dest->name)
     { // allocate memory if needed
         dest->name = calloc(MAX_NAME, sizeof(char));
         if (!dest->name)
         {
-            fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
+            fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_NAME);
             getchar();
             exit(-1);
         }
@@ -64,7 +77,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
             *(dest->colours + colourIx) = calloc(MAX_COLOUR_NAME, sizeof(char));
             if (!*(dest->colours + colourIx))
             {
-                fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
+                fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_COLOUR);
                 getchar();
                 exit(-1);
             }
@@ -73,6 +86,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
         strcpy(*(dest->colours + colourIx), *(src->colours + colourIx));
     }
 
+    // free all remaining colours
     freeColours(dest, colourIx, MAX_COLOURS - 1);
 }
 
@@ -91,8 +105,20 @@ void createNewColour(Dragon *const dragon, const size_t colourIx)
     *(dragon->colours + colourIx) = calloc(MAX_COLOUR_NAME, sizeof(char));
     if (!*(dragon->colours + colourIx))
     {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_COLOUR);
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_COLOUR);
         getchar();
         exit(-1);
     }
+}
+
+void createNewName(Dragon *const dragon, const char *const name)
+{
+    dragon->name = calloc(MAX_NAME, sizeof(char));
+    if (!dragon->name)
+    {
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_NAME);
+        getchar();
+        exit(-1);
+    }
+    strcpy(dragon->name, name);
 }

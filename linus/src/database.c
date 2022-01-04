@@ -5,6 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Error strings used in error messages
+#define ERROR_STRING_DATABASE_CREATE "Error: failed to allocate memory for database."
+#define ERROR_STRING_DATABASE_ARRAY "Error: failed to allocate memory for dragon array."
+#define ERROR_STRING_DATABASE_IX_ARRAY "Error: failed to allocate memory for dragon indexes array"
+#define ERROR_STRING_ID "Error: non-valid ID: "
+
 // Returns whether or not the string entered by user is an integer or name
 static bool isID(const char *const str);
 
@@ -19,7 +25,7 @@ Database *createDatabase()
     Database *db = malloc(sizeof(Database));
     if (db == NULL)
     {
-        fprintf(stderr, "Error: failed to allocate memory for database.\n");
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_CREATE);
         return NULL;
     }
 
@@ -29,7 +35,7 @@ Database *createDatabase()
     db->dragons = calloc(INITIAL_CAPACITY, sizeof(Dragon));
     if (db->dragons == NULL)
     {
-        fprintf(stderr, "Error: failed to allocate memory for dragon array.\n");
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_ARRAY);
         return NULL;
     }
 
@@ -41,7 +47,7 @@ void expandCapacity(Database *const db)
     Dragon *newDragonArray = calloc(GROWTH_FACTOR * db->capacity, sizeof(Dragon));
     if (!newDragonArray)
     {
-        fprintf(stderr, "Error: failed to allocate memory for expanded dragon array.\n");
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_ARRAY);
         getchar();
         exit(-1);
     }
@@ -87,7 +93,7 @@ int *searchForDragon(const Database *const db, const char *const identifier)
     int *dragonIndexes = calloc(db->size, sizeof(int)); // array to store indexes of all dragons found that matches the identifier
     if (!dragonIndexes)
     {
-        fprintf(stderr, "%s\n", "Error: failed to allocate memory for dragon indexes array");
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_IX_ARRAY);
         exit(-1);
     }
     for (size_t i = 0; i < db->size; i++)
@@ -102,30 +108,29 @@ int *searchForDragon(const Database *const db, const char *const identifier)
     { // convert the string to an integer
         char *endPtr;
         id = strtol(identifier, &endPtr, 0);
-        if (id < 1 || idToIndex(db, &id) >= db->size)
+        if (id < 1 || idToIndex(db, id) >= db->size)
         {
-            fprintf(stderr, "Error: non-valid ID: %d\n", id);
+            fprintf(stderr, "%s%d\n", ERROR_STRING_ID, id);
             return dragonIndexes;
         }
     }
 
     // search for a match
     unsigned int counter = 0;
-
     for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
     {
         if (isName)
         {
             if (strcmp(db->dragons[dragonIndex].name, identifier) == 0)
             {
-                dragonIndexes[counter++] = idToIndex(db, &db->dragons[dragonIndex].id);
+                dragonIndexes[counter++] = idToIndex(db, db->dragons[dragonIndex].id);
             }
         }
         else
         {
             if (db->dragons[dragonIndex].id == id)
             {
-                dragonIndexes[counter++] = idToIndex(db, &db->dragons[dragonIndex].id);
+                dragonIndexes[counter++] = idToIndex(db, db->dragons[dragonIndex].id);
                 break; // a dragon's ID is ALWAYS unique and never reused
             }
         }
@@ -182,11 +187,11 @@ void getDatabaseInfo(const Database *const db, size_t *const max, size_t *const 
     }
 }
 
-int idToIndex(const Database *const db, const unsigned int *const id)
+int idToIndex(const Database *const db, const unsigned int id)
 {
     for (size_t dragonIndex = 0; dragonIndex < db->size; dragonIndex++)
     {
-        if (db->dragons[dragonIndex].id == *id)
+        if (db->dragons[dragonIndex].id == id)
         {
             return dragonIndex;
         }
@@ -278,21 +283,8 @@ bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsig
     return false;
 }
 
-void createName(Database *const db, const char *const name, const unsigned int ix)
+void freeIxArray(int *ixArray)
 {
-    db->dragons[ix].name = calloc(MAX_NAME, sizeof(char));
-    if (!db->dragons[ix].name)
-    {
-
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NAME);
-        getchar();
-        exit(-1);
-    }
-    strcpy(db->dragons[ix].name, name);
-}
-
-void freeIntegerArray(int *intArray)
-{
-    free(intArray);
-    intArray = NULL;
+    free(ixArray);
+    ixArray = NULL;
 }

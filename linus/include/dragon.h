@@ -10,13 +10,12 @@ to handle dragons and their attributes
 
 #include <stdlib.h>
 
-// Error strings used as error messages
-#define ERROR_STRING_VOLANT "Error: invalid volant input\n"
-#define ERROR_STRING_FIERCE "Error: invalid range\n"
-#define ERROR_STRING_DRAGON_COLOUR "Error: failed to allocate memory for dragon colour\n"
-#define ERROR_STRING_DRAGON "Error: failed to allocate memory for new dragon\n"
-#define ERROR_STRING_DRAGON_NAME "Error: failed to allocate memory for dragon name\n"
-#define ERROR_STRING_DRAGON_NOT_FOUND "Error: dragon/s not found\n"
+// Error strings used in error messages
+#define ERROR_STRING_DRAGON_NAME "Error: failed to allocate memory for dragon name"
+#define ERROR_STRING_DRAGON_COLOUR "Error: failed to allocate memory for dragon colour"
+#define ERROR_STRING_DRAGON_NOT_FOUND "Error: dragon/s not found"
+#define ERROR_STRING_DRAGON_VOLANT "Error: invalid volant input"
+#define ERROR_STRING_DRAGON_FIERCE "Error: invalid range"
 
 // The minimum and maximum fierceness allowed
 #define MIN_FIERCENESS 1
@@ -47,14 +46,18 @@ void swapDragons(Dragon *const d1, Dragon *const d2);
 
 // Free all colours of a dragon within the given indexes
 // Parameters: (a dragon), (lower bound, inclusive), (higher bound, inclusive)
-void freeColours(Dragon *const d, size_t, const size_t);
+void freeColours(Dragon *const d, size_t low, const size_t high);
 
 // Copy a dragon to another
 // Parameters: (the destination dragon), (the source dragon)
 void copyDragon(Dragon *const dest, const Dragon *const src);
 
-// Allocates memory for a dragon at the indicated colour index
+// Allocates memory for a colour at the indicated colour index of a dragon
 // Parameters: (the dragon), (the colour index)
 void createNewColour(Dragon *const dragon, const size_t colourIx);
+
+// Allocates memory for a dragon's name and sets the name
+// Parameters: (a dragon), (the name)
+void createNewName(Dragon *const dragon, const char *const name);
 
 #endif

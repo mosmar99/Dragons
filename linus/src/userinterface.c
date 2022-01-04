@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <assert.h>
 
+// Error strings used in error messages
+#define ERROR_STRING_MENU_SELECTION "Invalid selection. Please try again."
+#define ERROR_STRING_VALID "Error: only letters in the english alphabet is allowed"
+#define ERROR_STRING_SORT "No need to sort a database with no more than 1 dragon."
+
 // constants used for formatting when printing dragon/s
 #define IDWIDTH 5
 #define NAMEWIDTH MAX_NAME
@@ -14,7 +19,9 @@
 #define NUMCOLOURSWIDTH 8
 #define COLOURSWIDTH MAX_COLOURS *MAX_COLOUR_NAME
 
-// Prints a list of dragons (Database), (array of dragons' indexes), (true = all dragons, false = some dragons), (true = detailed, false = breif)
+// Prints a list of dragons, either all dragons or a selection of dragons using ixs array which
+// contains the array indexes of the selected dragons
+// Parameters: (Database), (array of dragons' indexes), (true = all dragons, false = some dragons), (true = detailed, false = breif)
 static void listDragons(const Database *const db, const unsigned int *const ixs, bool all, bool detailed);
 
 // Get an ID or name of dragon from user
@@ -131,7 +138,7 @@ void executeCommands(Database *const db)
             puts("Have a good one! See ya!");
             break;
         default:
-            fprintf(stderr, "%s", ERROR_STRING_MENU_SELECTION);
+            fprintf(stderr, "\n%s\n", ERROR_STRING_MENU_SELECTION);
             break;
         }
     }
@@ -169,6 +176,8 @@ static void listDragons(const Database *const db, const unsigned int *const ixs,
         if (all || i == ixs[counter])
         {
             printOneDragonStats(db, i, detailed);
+
+            puts("");
             if (!all)
             {
                 counter++;
@@ -210,8 +219,6 @@ static void printOneDragonStats(const Database *const db, unsigned int ix, bool 
             printf(" %s", *(db->dragons[ix].colours + i));
         }
     }
-
-    puts("");
 }
 
 static void printDatabaseInfo(const Database *const db)
@@ -261,7 +268,7 @@ static void updateDragonHandler(Database *const db)
 {
     if (db->size == 0)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_EMPTY);
         return;
     }
 
@@ -270,7 +277,7 @@ static void updateDragonHandler(Database *const db)
     int *indexes = searchForDragon(db, identifier);
     if (*indexes == SENTINEL)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
 
@@ -283,7 +290,7 @@ static void updateDragonHandler(Database *const db)
     puts("");
     updateDragon(&db->dragons[ix]);
 
-    freeIntegerArray(indexes); // free the array created by searchForDragon()
+    freeIxArray(indexes); // free the array created by searchForDragon()
 
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
@@ -310,21 +317,22 @@ static void insertDragonHandler(Database *const db)
         scanf("%19s", name);
         if (!checkNameOrColour(name))
         {
-            fprintf(stderr, "%s", ERROR_STRING_COLOUR_VALID);
+            fprintf(stderr, "%s\n", ERROR_STRING_VALID);
         }
     } while (!checkNameOrColour(name));
     stringToUppercase(name);
 
     // assign id
     db->dragons[db->size].id = db->nextId++;
-    const int ix = idToIndex(db, &db->dragons[db->size++].id);
+    const int ix = idToIndex(db, db->dragons[db->size++].id);
     assert(ix >= 0);
 
     // assign name
-    createName(db, name, ix);
+    createNewName(&db->dragons[ix], name);
 
     // assign rest of the attributes
     updateDragon(&db->dragons[ix]);
+
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Dragon inserterd.");
@@ -334,7 +342,7 @@ static void deleteDragonHandler(Database *const db)
 {
     if (db->size == 0)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DATABASE_EMPTY);
+        fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_EMPTY);
         return;
     }
 
@@ -343,19 +351,20 @@ static void deleteDragonHandler(Database *const db)
     int *indexes = searchForDragon(db, identifier);
     if (*indexes == SENTINEL)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
 
+    // get dragon array index
     int ix = *indexes;
     if (*(indexes + 1) != SENTINEL) // multiple dragons were found
     {
         ix = selectOneDragon(db, indexes);
     }
 
-    doDeleteDragon(db, ix);
+    doDeleteDragon(db, ix); // delete the dragon
 
-    freeIntegerArray(indexes); // free the array created by searchForDragon()
+    freeIxArray(indexes); // free the array created by searchForDragon()
 
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
@@ -366,7 +375,7 @@ static void sortDragonsHandler(Database *const db)
 {
     if (db->size <= 1) // pointless to sort empty array or array of size 0 or 1
     {
-        fprintf(stderr, "%s", "No need to sort a database with no more than 1 dragon.\n");
+        fprintf(stderr, "%s\n", ERROR_STRING_SORT);
         return;
     }
 
@@ -380,6 +389,7 @@ static void sortDragonsHandler(Database *const db)
     } while (!(choice == 0 || choice == 1));
 
     sortDragons(db, (bool)choice);
+
     saveDatabase(NULL, db);
     loadDatabase(NULL, db);
     puts("Database sorted.");
@@ -403,7 +413,7 @@ static void updateVolant(Dragon *const dragon)
         volant = toupper(volant);
         if (volant != 'Y' && volant != 'N')
         {
-            fprintf(stderr, "%s", ERROR_STRING_VOLANT);
+            fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_VOLANT);
         }
     } while (volant != 'Y' && volant != 'N');
     dragon->isVolant = volant;
@@ -419,7 +429,7 @@ static void updateFierce(Dragon *const dragon)
         scanf("%2d[0123456789]", &fierce);
         if (fierce < MIN_FIERCENESS || fierce > MAX_FIERCENESS)
         {
-            fprintf(stderr, "%s", ERROR_STRING_FIERCE);
+            fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_FIERCE);
         }
     } while (fierce < MIN_FIERCENESS || fierce > MAX_FIERCENESS);
     dragon->fierceness = fierce;
@@ -440,7 +450,7 @@ static void updateColours(Dragon *const dragon)
             fgets(colour, MAX_COLOUR_NAME - 1, stdin);
             if (!checkNameOrColour(colour))
             {
-                fprintf(stderr, "%s", ERROR_STRING_NAME_VALID);
+                fprintf(stderr, "%s\n", ERROR_STRING_VALID);
             }
         } while (!checkNameOrColour(colour));
         stringToUppercase(colour);
@@ -501,7 +511,7 @@ static void listOneDragon(const Database *const db)
     int *indexes = searchForDragon(db, identifier);
     if (*indexes == SENTINEL)
     {
-        fprintf(stderr, "%s", ERROR_STRING_DRAGON_NOT_FOUND);
+        fprintf(stderr, "%s\n", ERROR_STRING_DRAGON_NOT_FOUND);
         return;
     }
     if (*(indexes + 1) != SENTINEL) // multiple dragons were found
@@ -519,7 +529,7 @@ static void listOneDragon(const Database *const db)
     // list 1 dragon
     listDragons(db, indexes, false, true);
 
-    freeIntegerArray(indexes); // free the array created by searchForDragon()
+    freeIxArray(indexes); // free the array created by searchForDragon()
 }
 
 static int selectOneDragon(const Database *const db, const unsigned int *const ixs)
@@ -537,5 +547,5 @@ static int selectOneDragon(const Database *const db, const unsigned int *const i
             fprintf(stderr, "%s\n", ERROR_STRING_MENU_SELECTION);
         }
     } while (!dragonsHasID(db, ixs, id));
-    return idToIndex(db, &id);
+    return idToIndex(db, id);
 }

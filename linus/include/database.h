@@ -8,8 +8,11 @@ This file contains the interface of many functions to handle
 a database and its properties
 */
 
-#include <stdbool.h>
 #include "dragon.h"
+#include <stdbool.h>
+
+// Error strings used in error messages
+#define ERROR_STRING_DATABASE_EMPTY "Error: no dragons in database"
 
 // The initial capacity of the database
 #define INITIAL_CAPACITY 10
@@ -20,10 +23,8 @@ a database and its properties
 // Maximum number (minus 1) of characters allowed in name of database
 #define MAX_FILENAME 50
 
+// The default value / terminator for the dragon indexes array
 #define SENTINEL -1
-
-// Error strings used as error messages
-#define ERROR_STRING_DATABASE_EMPTY "Error: no dragons in database\n"
 
 typedef struct Database
 {
@@ -38,9 +39,9 @@ Database *createDatabase();
 
 // Increases the database capacity according to GROWTH_FACTOR
 // Paramter: (a database)
-void expandCapacity(Database *const);
+void expandCapacity(Database *const db);
 
-// Frees the RAM memory occupied by a Database
+// Frees the memory occupied by a Database
 // Parameter: (a database)
 void destroyDatabase(Database *);
 
@@ -48,35 +49,31 @@ void destroyDatabase(Database *);
 // Returns an array of indexes of dragon/s that matches the identifier
 // The default value is SENTINEL
 // Paramters: (a database), (an identifier as either ID or name)
-int *searchForDragon(const Database *const, const char *const);
+int *searchForDragon(const Database *const db, const char *const identifier);
 
 // Gather min and max values for fierceness, #volant and #non-volant
 // Parameters:(a database), (mininimum fierceness), (maximum fierceness), (number of volant), (number of non-volant)
-void getDatabaseInfo(const Database *const, size_t *const, size_t *const, size_t *const, size_t *const);
+void getDatabaseInfo(const Database *const db, size_t *const minF, size_t *const maxF, size_t *const nV, size_t *const nNonV);
 
 // Finds the array index given a dragon's id
 // Returns -1 if not found
 // Paramteters: (a database), (a dragon's id)
-int idToIndex(const Database *const, const unsigned int *const);
+int idToIndex(const Database *const db, const unsigned int id);
 
 // Delete a dragon by array index
 // Parameters: (a database), (the array-index of a dragon)
 void doDeleteDragon(Database *const db, int ix);
 
 // Sort the database in ascending order by name or id
-// Parameters: (a database), (bool = true by name, bool = false by id)
-void sortDragons(Database *const, const bool);
+// Parameters: (a database), (true = by name, false = by id)
+void sortDragons(Database *const db, const bool);
 
-// Checks if the selected ID is present in the database
+// Checks if the selected ID is present in the database AND indexes array
 // Parameters: (a database), (an int array with array indexes of dragon/s), (an ID to check)
 bool dragonsHasID(const Database *const db, const unsigned int *const ixs, unsigned int id);
 
-// Allocates memory for a dragon's name at a certain array index
-// Parameters: (a database), (the name for new dragon), (the array index of the dragon)
-void createName(Database *const db, const char *const name, const unsigned int ix);
-
-// Used to free the integer array created by searchForDragon()
+// Used to free the indexes array created by searchForDragon()
 // Parameters: (the array)
-void freeIntegerArray(int *array);
+void freeIxArray(int *ixArray);
 
 #endif
