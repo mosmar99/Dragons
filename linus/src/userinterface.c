@@ -20,7 +20,7 @@
 #define COLOURSWIDTH MAX_COLOURS *MAX_COLOUR_NAME
 
 // Prints a list of dragons, either all dragons or a selection of dragons using ixs array which
-// contains the array indexes of the selected dragons
+// contains the array-indexes of the selected dragons
 // Parameters: (Database), (array of dragons' indexes), (true = all dragons, false = some dragons), (true = detailed, false = breif)
 static void listDragons(const Database *const db, const unsigned int *const ixs, bool all, bool detailed);
 
@@ -120,10 +120,10 @@ void executeCommands(Database *const db)
             deleteDragonHandler(db);
             break;
         case 4:
-            listDragons(db, NULL, true, false); // brief
+            listDragons(db, NULL, true, false); // all dragons, brief
             break;
         case 5:
-            listDragons(db, NULL, true, true); // detailed
+            listDragons(db, NULL, true, true); // all dragons, detailed
             break;
         case 6:
             listOneDragon(db);
@@ -178,7 +178,7 @@ static void listDragons(const Database *const db, const unsigned int *const ixs,
             printOneDragonStats(db, i, detailed);
 
             puts("");
-            if (!all)
+            if (!all) // if a selection of dragon is being printed, increment index counter
             {
                 counter++;
             }

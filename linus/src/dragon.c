@@ -12,7 +12,7 @@ void swapDragons(Dragon *const d1, Dragon *const d2)
     {
         return; // no need to swap a dragon with itself
     }
-    
+
     // set up a temporary dragon
     Dragon *temp = calloc(1, sizeof(Dragon));
     if (!temp)
@@ -41,7 +41,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
     {
         return; // no need to copy a dragon to itself
     }
-    
+
     // copy name
     if (!dest->name)
     { // allocate memory if needed

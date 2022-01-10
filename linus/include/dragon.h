@@ -4,8 +4,7 @@
 /*
 File: dragon.h
 Description: 
-This file contains the interface of certain functions
-to handle dragons and their attributes
+This file contains the interface to handle dragons and their attributes
 */
 
 #include <stdlib.h>

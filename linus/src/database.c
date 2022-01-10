@@ -15,10 +15,9 @@
 static bool isID(const char *const str);
 
 // Delete a dragon by array index
-// If not last, copies dragon at index + 1
 // Returns true if dragon was last in array
 // Parameters: (a database), (the array-index of a dragon)
-static bool deleteDragon(Database *const, const unsigned int *const);
+static bool deleteDragon(Database *const db, const unsigned int *const ix);
 
 Database *createDatabase()
 {
@@ -94,6 +93,7 @@ int *searchForDragon(const Database *const db, const char *const identifier)
     if (!dragonIndexes)
     {
         fprintf(stderr, "%s\n", ERROR_STRING_DATABASE_IX_ARRAY);
+        getchar();
         exit(-1);
     }
     for (size_t i = 0; i < db->size; i++)

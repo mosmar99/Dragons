@@ -4,8 +4,7 @@
 /*
 File: filehandler.h
 Description:
-This file contains the interface of handling the loading and saving 
-the database as a .txt file
+This file contains the interface of handling the loading and saving of a database as a .txt file
 */
 
 #include "database.h"
@@ -15,7 +14,7 @@ the database as a .txt file
 // if the .txt path is NULL, it will use the last known path
 void loadDatabase(const char *const str, Database *const db);
 
-// Stores the database in a chosen file
+// Stores the database in a chosen .txt file
 // Parameters: (the relative path to a .txt file), (a database)
 // if the .txt path is NULL, it will use the last known path
 void saveDatabase(const char *const str, const Database *const db);

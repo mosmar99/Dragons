@@ -2,10 +2,9 @@
 #define _DATABASE_H
 
 /*
-File: database.h.h
+File: database.h
 Description: 
-This file contains the interface of many functions to handle
-a database and its properties
+This file contains the interface to handle a database and its properties
 */
 
 #include "dragon.h"
@@ -23,7 +22,7 @@ a database and its properties
 // Maximum number (minus 1) of characters allowed in name of database
 #define MAX_FILENAME 50
 
-// The default value / terminator for the dragon indexes array
+// The default value/terminator for the dragon indexes array
 #define SENTINEL -1
 
 typedef struct Database
@@ -43,7 +42,7 @@ void expandCapacity(Database *const db);
 
 // Frees the memory occupied by a Database
 // Parameter: (a database)
-void destroyDatabase(Database *);
+void destroyDatabase(Database *db);
 
 // Search database for dragon/s by name or ID
 // Returns an array of indexes of dragon/s that matches the identifier

@@ -4,8 +4,7 @@
 /*
 File: userinterface.h
 Description: 
-This file contains the interface of printing to the screen
-and handling the inputs from the user
+This file contains the interface of printing to the screen and handling the inputs from the user
 */
 
 #include "database.h"
