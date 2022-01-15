@@ -106,8 +106,7 @@ int *searchForDragon(const Database *const db, const char *const identifier)
     int id;
     if (!isName)
     { // convert the string to an integer
-        char *endPtr;
-        id = strtol(identifier, &endPtr, 0);
+        id = strtol(identifier, NULL, 0); // endPtr not needed since the identifier is already validated to be a number
         if (id < 1 || idToIndex(db, id) >= db->size)
         {
             fprintf(stderr, "%s%d\n", ERROR_STRING_ID, id);

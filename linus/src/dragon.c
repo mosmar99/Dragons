@@ -69,7 +69,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
 
     // copy all colours
     size_t colourIx = 0;
-    for (; colourIx < dest->numColours; colourIx++)
+    while (colourIx < dest->numColours)
     {
         // allocate memory if needed
         if (!*(dest->colours + colourIx))
@@ -84,6 +84,7 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
         }
         // then copy a colour
         strcpy(*(dest->colours + colourIx), *(src->colours + colourIx));
+        colourIx++;
     }
 
     // free all remaining colours
@@ -93,10 +94,11 @@ void copyDragon(Dragon *const dest, const Dragon *const src)
 void freeColours(Dragon *dragon, size_t lower, const size_t higher)
 {
     assert(higher < MAX_COLOURS);
-    for (; lower <= higher; lower++)
+    while (lower <= higher)
     {
         free(*(dragon->colours + lower));
         *(dragon->colours + lower) = NULL;
+        lower++;
     }
 }
 
